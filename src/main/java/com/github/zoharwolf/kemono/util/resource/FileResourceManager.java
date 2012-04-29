@@ -51,7 +51,8 @@ public class FileResourceManager extends ResourceManager
             File[] files = pathFile.listFiles();
             if (files != null && files.length > 0) 
             {
-                for (File oneFile: files){
+                for (File oneFile: files)
+                {
                     if (oneFile.isDirectory())
                     {
                         Map<String, byte[]> dirFiles = putResourcesInMap( path + oneFile.getName() + "/" );
@@ -59,9 +60,9 @@ public class FileResourceManager extends ResourceManager
                     } 
                     else
                     {
-                        if (!fileMap.containsKey(pathFile.getName().toLowerCase()))
+                        if (!fileMap.containsKey(oneFile.getName().toLowerCase()))
                         {
-                            fileMap.put(oneFile.getName().toLowerCase(), convertFileToByte(pathFile));
+                            fileMap.put(oneFile.getName().toLowerCase(), convertFileToByte(oneFile));
                         }
                     }
                 }
@@ -93,18 +94,34 @@ public class FileResourceManager extends ResourceManager
                 offset += readBytes;
             }
             
-        } catch (FileNotFoundException e)
+        } 
+        catch (FileNotFoundException e)
         {
             e.printStackTrace();
-        } catch (IOException e)
+        } 
+        catch (IOException e)
         {
             e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if (is != null) is.close();
+            } 
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         
         return b;
     }
 
 
+    /**
+     * get inputstream by resource name.
+     */
     @Override
     public InputStream getResourceAsStream(String fileName)
     {

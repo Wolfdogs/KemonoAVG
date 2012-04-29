@@ -6,6 +6,6 @@ public class ResourceManagerFactory
 {
     public static ResourceManager getResourceManager(String resName)
     {
-        return null;
+        return new FileResourceManager(resName);
     }
 }
