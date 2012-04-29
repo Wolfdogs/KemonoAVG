@@ -90,8 +90,7 @@ public class EventManager implements IEventManager
 		return addListener(entry);
 	}
 	
-	@Override
-	public Entry addListener( Entry entry )
+	private Entry addListener( Entry entry )
 	{
 		Class<? extends Event> type = entry.getType();
 		Object relatedObject = entry.getRelatedObject();

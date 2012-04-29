@@ -127,14 +127,6 @@ public class ManagedEventManager implements IEventManager
 		addListenerEntry( entry );
 		return entry;
 	}
-	
-	@Override
-	public Entry addListener( Entry entry )
-	{
-		Entry ret = eventManager.addListener(entry);
-		addListenerEntry( ret );
-		return ret;
-	}
 
 	@Override
 	public void removeListener( Class<? extends Event> type, IEventListener listener )
