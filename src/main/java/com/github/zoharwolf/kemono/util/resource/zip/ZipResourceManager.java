@@ -1,4 +1,4 @@
-package com.github.zoharwolf.kemono.util.resource;
+package com.github.zoharwolf.kemono.util.resource.zip;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import com.github.zoharwolf.kemono.util.resource.ResourceManager;
 
 /**
  * 从zip文件中获取资源的类

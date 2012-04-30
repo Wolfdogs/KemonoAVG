@@ -1,9 +1,11 @@
-package com.github.zoharwolf.kemono.util.resource;
+package com.github.zoharwolf.kemono.util.resource.fs;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import com.github.zoharwolf.kemono.util.resource.ResourceManager;
 
 /**
  * 从指定文件夹中获取文件。

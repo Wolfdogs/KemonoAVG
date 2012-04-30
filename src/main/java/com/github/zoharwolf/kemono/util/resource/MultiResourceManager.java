@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.zoharwolf.kemono.util.resource.IResourceManager;
+import com.github.zoharwolf.kemono.util.resource.fs.FileResourceManager;
+import com.github.zoharwolf.kemono.util.resource.zip.ZipResourceManager;
+
 /**
  * 存储多个IResourceManager实例，按照初始化顺序从中查找指定的文件
  * @author zohar
