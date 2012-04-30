@@ -10,7 +10,7 @@ import java.io.InputStream;
  * @author zohar
  *
  */
-public class FileResourceManager implements IResourceManager
+public class FileResourceManager extends ResourceManager
 {
     private String dirName; // 资源文件夹
     private File searchResult; // 查找结果
@@ -21,9 +21,9 @@ public class FileResourceManager implements IResourceManager
     }
     
     /**
-     * 根据指定的文件名获取inputstream.
-     * @throws FileNotFoundException 在资源中找不到指定的文件时返回的
+     * 根据指定的文件名获取inputstream，找不到文件时返回exception
      */
+    
     @Override
     public InputStream getResourceAsStream(String fileName) throws FileNotFoundException
     {
@@ -36,14 +36,8 @@ public class FileResourceManager implements IResourceManager
         }
         
         FileInputStream fis = null;
-        try
-        {
-            fis = new FileInputStream(searchResult);
-        } 
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+        fis = new FileInputStream(searchResult);
+        
         searchResult = null;
 
         return fis;

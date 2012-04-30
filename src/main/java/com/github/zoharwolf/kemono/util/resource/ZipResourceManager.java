@@ -13,7 +13,7 @@ import java.util.zip.ZipInputStream;
  * @author zohar
  *
  */
-public class ZipResourceManager implements IResourceManager
+public class ZipResourceManager extends ResourceManager
 {
     private String zipName;
     
@@ -24,7 +24,7 @@ public class ZipResourceManager implements IResourceManager
 
 
     /**
-     * 从Zip中猎取指定名字的资源
+     * 从Zip中获取指定名字的资源
      */
     @Override
     public InputStream getResourceAsStream(String fileName) throws FileNotFoundException
