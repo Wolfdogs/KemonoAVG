@@ -1,7 +1,7 @@
 package com.github.zoharwolf.kemono.util.graph;
 
-import java.util.NavigableSet;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -10,22 +10,30 @@ import org.lwjgl.opengl.GL11;
  * 用于管理可绘画对象的渲染循序以及事件处理。
  */
 
-public class DrawableContainer implements Drawable
+public class DrawableContainer extends DrawableObject
 {
-	private NavigableSet<Drawable> drawables;
+	private List<Drawable> drawables;
 	
 	
 	public DrawableContainer()
 	{
-		drawables = new ConcurrentSkipListSet<>();
+		drawables = new LinkedList<>();
+	}
+	
+	public void add( Drawable drawable )
+	{
+		drawables.add( drawable );
 	}
 
 	@Override
-	public void draw( GL11 gl )
-	{
+	public void onDraw()
+	{		
 		for( Drawable drawable : drawables )
-		{
-			drawable.draw( gl );
+		{	
+			GL11.glMatrixMode( GL11.GL_PROJECTION );
+			GL11.glPushMatrix();
+			drawable.draw();
+			GL11.glPopMatrix();
 		}
 	}
 }

@@ -13,15 +13,15 @@ public interface Rotatable
 	 * @return
 	 *  x轴旋转角度数据
 	 */
-	float getRotateX();
+	float getRotationX();
 
 	/**
 	 * 设定对象的x轴旋转角度数据。
 	 * 
-	 * @param rotateX
+	 * @param rotationX
 	 *  x轴旋转角度数据
 	 */
-	void setRotateX( float rotateX  );
+	void setRotationX( float rotationX  );
 
 	/**
 	 * 获取对象的y轴旋转角度数据。
@@ -29,15 +29,15 @@ public interface Rotatable
 	 * @return
 	 *  y轴旋转角度数据
 	 */
-	float getRotateY();
+	float getRotationY();
 	
 	/**
 	 * 设定对象的y轴旋转角度数据。
 	 * 
-	 * @param rotateY
+	 * @param rotationY
 	 *  y轴旋转角度数据
 	 */
-	void setRotateY( float rotateY );
+	void setRotationY( float rotationY );
 
 	/**
 	 * 获取对象的z轴旋转角度数据。
@@ -45,13 +45,13 @@ public interface Rotatable
 	 * @return
 	 *  z轴旋转角度数据
 	 */
-	float getRotateZ();
+	float getRotationZ();
 	
 	/**
 	 * 设定对象的z轴旋转角度数据。
 	 * 
-	 * @param rotateZ
+	 * @param rotationZ
 	 *  z轴旋转角度数据
 	 */
-	void setRotateZ( float rotateZ );
+	void setRotationZ( float rotationZ );
 }

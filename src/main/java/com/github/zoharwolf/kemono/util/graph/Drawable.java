@@ -1,6 +1,5 @@
 package com.github.zoharwolf.kemono.util.graph;
 
-import org.lwjgl.opengl.GL11;
 
 /**
  * 可使用OpenGL进行绘画的接口
@@ -9,10 +8,7 @@ import org.lwjgl.opengl.GL11;
 public interface Drawable
 {
 	/**
-	 * 使用传入的OpenGL实例绘画当前对象。<p>
-	 * 
-	 * @param gl
-	 *  OpenGL对象实例
+	 * 使用OpenGL绘画当前对象。<p>
 	 */
-	void draw( GL11 gl );
+	void draw();
 }

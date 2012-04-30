@@ -5,12 +5,18 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import com.github.zoharwolf.kemono.util.graph.DrawableContainer;
+import com.github.zoharwolf.kemono.util.graph.QuadrangleDrawableObject;
+import com.github.zoharwolf.kemono.util.graph.Stage;
+
 public class KemonoAVG
 {
 	private Config config;
 	private float fps;
 	private int fpsCount;
 	private long updateFpsTick;
+	
+	private Stage stage;
 	
 	
 	public KemonoAVG( Config config )
@@ -35,15 +41,40 @@ public class KemonoAVG
 		
 		GL11.glMatrixMode( GL11.GL_PROJECTION );
 		GL11.glLoadIdentity();
-		GL11.glOrtho( 0, 800, 0, 600, 1, -1 );
-		GL11.glMatrixMode( GL11.GL_MODELVIEW );
+		GL11.glOrtho( 0, 800, 600, 0, 1, -1 );
 		
 		updateFpsTick = System.nanoTime();
+		
+		stage = new Stage();
+		
+		DrawableContainer container = new DrawableContainer();
+		
+		QuadrangleDrawableObject object = new QuadrangleDrawableObject(200.0f, 200.0f);
+		object.setX( 0.0f );
+		object.setY( 0.0f );
+		object.setColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		container.add( object );
+
+		object = new QuadrangleDrawableObject(100.0f, 100.0f);
+		object.setX( 0.0f );
+		object.setY( 0.0f );
+		object.setColor( 1.0f, 0.0f, 0.0f, 1.0f );
+		container.add( object );
+
+		container.setX( 100 );
+		container.setY( 100 );
+		container.setCenterX( 100.0f );
+		container.setCenterY( 100.0f );
+		//container.setRotationZ( 90.0f );
+		//container.setScaleY( 2.0f );
+		stage.add( container );
 		
 		while( !Display.isCloseRequested() )
 		{
 			render();
 			Display.update();
+
+			container.setRotationZ( container.getRotationZ() + 1.0f );
 			
 			fpsCount++;
 			
@@ -65,14 +96,10 @@ public class KemonoAVG
 	public void render()
 	{
 		GL11.glClear( GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT );
+
+		GL11.glMatrixMode( GL11.GL_MODELVIEW );
+		GL11.glLoadIdentity();
 		
-		GL11.glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
-		GL11.glBegin( GL11.GL_QUADS );
-		GL11.glVertex2f( 100, 100 );
-		GL11.glVertex2f( 100+200, 100 );
-		GL11.glVertex2f( 100+200, 100+200 );
-		GL11.glVertex2f( 100, 100+200 );
-		
-		GL11.glEnd();
+		stage.draw();
 	}
 }
