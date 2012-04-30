@@ -1,9 +1,12 @@
 package com.github.zoharwolf.kemono.util.resource;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public abstract class ResourceManager implements IResourceManager
+public abstract class ResourceManager
 {
-    @Override
-    public abstract InputStream getResourceAsStream(String path);
+    public static IResourceManager getResource(String resName)
+    {
+        return new MultiResourceManager(resName);
+    }
 }

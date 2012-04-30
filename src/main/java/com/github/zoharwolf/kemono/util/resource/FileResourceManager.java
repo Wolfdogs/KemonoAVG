@@ -1,133 +1,86 @@
 package com.github.zoharwolf.kemono.util.resource;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.Map;
 
-public class FileResourceManager extends ResourceManager
+/**
+ * 从指定文件夹中获取文件。
+ * @author zohar
+ *
+ */
+public class FileResourceManager implements IResourceManager
 {
-    private String dirName;
-    Map<String, byte[]> allFileMap;
+    private String dirName; // 资源文件夹
+    private File searchResult; // 查找结果
     
     public FileResourceManager(String dirName)
     {
         this.dirName = dirName;
-        init();
-    }
-    
-
-    /**
-     * init data
-     */
-    private void init()
-    {
-        allFileMap = putResourcesInMap(dirName);
     }
     
     /**
-     * Put all resources in Map under the path
-     * @param path: directory path or file path.
-     * @return 
+     * 根据指定的文件名获取inputstream.
+     * @throws FileNotFoundException 在资源中找不到指定的文件时返回的
      */
-    private Map<String, byte[]> putResourcesInMap(String path)
+    @Override
+    public InputStream getResourceAsStream(String fileName) throws FileNotFoundException
     {
-        File pathFile = new File(path);
-        Map<String, byte[]> fileMap = new Hashtable<String, byte[]>();
+        searchResult = null;
+        searchFileFromPath(dirName, fileName);
         
-        if (pathFile.isFile())
+        if (searchResult == null)
         {
-            if (!fileMap.containsKey(pathFile.getName().toLowerCase()))
-            {
-                fileMap.put(pathFile.getName().toLowerCase(), convertFileToByte(pathFile));
-            }
-        } 
-        else
-        {
-            File[] files = pathFile.listFiles();
-            if (files != null && files.length > 0) 
-            {
-                for (File oneFile: files)
-                {
-                    if (oneFile.isDirectory())
-                    {
-                        Map<String, byte[]> dirFiles = putResourcesInMap( path + oneFile.getName() + "/" );
-                        fileMap.putAll(dirFiles);
-                    } 
-                    else
-                    {
-                        if (!fileMap.containsKey(oneFile.getName().toLowerCase()))
-                        {
-                            fileMap.put(oneFile.getName().toLowerCase(), convertFileToByte(oneFile));
-                        }
-                    }
-                }
-            }
+            return null;
         }
         
-        return fileMap;
-    }
-    
-    /**
-     * Convert a file to a byte array.
-     * @param f: file name.
-     * @return byte array after converting.
-     */
-    private byte[] convertFileToByte(File f)
-    {
-        int size = (int) f.length();
-        byte[] b = new byte[size];
-        InputStream is = null;
+        FileInputStream fis = null;
         try
         {
-            is = new FileInputStream(f);
-            int offset = 0;
-            int readBytes = 0;
-            while (size - readBytes > 0)
-            {
-                readBytes = is.read(b, offset, size - offset);
-                if (readBytes == -1) break;
-                offset += readBytes;
-            }
-            
+            fis = new FileInputStream(searchResult);
         } 
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
-        } 
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
-        finally
-        {
-            try
-            {
-                if (is != null) is.close();
-            } 
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        
-        return b;
+        searchResult = null;
+
+        return fis;
     }
 
 
     /**
-     * get inputstream by resource name.
+     * 从指定的path中搜索目标文件。搜索到结果之后会将其赋值给searchResult
+     * @param path 指定的path名
+     * @param targetFileName 目标文件名
      */
-    @Override
-    public InputStream getResourceAsStream(String fileName)
+    private void searchFileFromPath(String path, String targetFileName)
     {
-        byte[] b = allFileMap.get(fileName.toLowerCase());
-
-        return new ByteArrayInputStream(b);
+        // 如果已经查到指定文件，这之后的查找均无效。
+        if (searchResult != null) return;
+        
+        File filePath = new File(path);
+        if (filePath.isFile())
+        {
+            if (filePath.getName().equalsIgnoreCase(targetFileName))
+            {
+                // 将第一次查找到的结果，赋值给searchResult
+                searchResult =  filePath;
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            File[] filesInPath = filePath.listFiles();
+            for (File oneFile: filesInPath)
+            {
+                searchFileFromPath(oneFile.getPath(), targetFileName);
+            }
+        }
     }
 
 }
