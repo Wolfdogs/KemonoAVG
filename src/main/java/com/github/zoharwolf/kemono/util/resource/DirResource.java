@@ -16,6 +16,7 @@ public interface DirResource extends Resource
 
 	DirResource getParent();
 	
+	Resource get( String path );
 	FileResource getFile( String path );
 	DirResource getDir( String path );
 	
