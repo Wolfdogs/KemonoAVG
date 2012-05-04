@@ -5,24 +5,6 @@ import java.util.List;
 
 public abstract class AbstractDirResource implements DirResource
 {
-	private static final DirResourceFilter NULL_DIR_RESOURCE_FILTER = new DirResourceFilter()
-	{
-		@Override
-		public boolean isAccept( DirResource resource )
-		{
-			return true;
-		}
-	};
-	
-	private static final FileResourceFilter NULL_FILE_RESOURCE_FILTER = new FileResourceFilter()
-	{
-		@Override
-		public boolean isAccept(FileResource resource)
-		{
-			return true;
-		}
-	};
-	
 	private static void addAllToList( List<Resource> resources, List<Resource> source )
 	{
 		resources.addAll( source );
@@ -33,6 +15,34 @@ public abstract class AbstractDirResource implements DirResource
 			DirResource dirResource = (DirResource) resource;
 			addAllToList(resources, dirResource.list());
 		}
+	}
+	
+	private static List<FileResource> listFiles( List<Resource> resources, FileResourceFilter filter )
+	{
+		List<FileResource> files = new ArrayList<>();
+		for( Resource resource : resources )
+		{
+			if( resource instanceof FileResource == false ) continue;
+			
+			FileResource res = (FileResource) resource;
+			if( filter == null || filter.isAccept(res) ) files.add( res );
+		}
+		
+		return files;
+	}
+	
+	private static List<DirResource> listDirs( List<Resource> resources, DirResourceFilter filter )
+	{
+		List<DirResource> dirs = new ArrayList<>();
+		for( Resource resource : resources )
+		{
+			if( resource instanceof DirResource == false ) continue;
+			
+			DirResource res = (DirResource) resource;
+			if( filter == null || filter.isAccept(res) ) dirs.add( res );
+		}
+		
+		return dirs;
 	}
 	
 	
@@ -73,106 +83,36 @@ public abstract class AbstractDirResource implements DirResource
 	@Override
 	public List<FileResource> listFiles()
 	{
-		List<FileResource> files = new ArrayList<>();
-		List<Resource> resources = list();
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof FileResource == false ) continue;
-			files.add( (FileResource) resource );
-		}
-		
-		return files;
+		return listFiles( list(), null );
 	}
 
 	@Override
 	public List<FileResource> listFiles( FileResourceFilter filter )
 	{
-		if( filter == null ) filter = NULL_FILE_RESOURCE_FILTER;
-		
-		List<FileResource> files = new ArrayList<>();
-		List<Resource> resources = list();
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof FileResource == false ) continue;
-				
-			FileResource res = (FileResource) resource;
-			if( filter.isAccept(res) ) files.add( res );
-		}
-		
-		return files;
+		return listFiles( list(), filter );
 	}
 
 	@Override
 	public List<FileResource> listFiles( FileResourceFilter filter, boolean subdir )
 	{
-		if( filter == null ) filter = NULL_FILE_RESOURCE_FILTER;
-		
-		List<FileResource> files = new ArrayList<>();
-		List<Resource> resources = list(subdir);
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof FileResource == false ) continue;
-			
-			FileResource res = (FileResource) resource;
-			if( filter.isAccept(res) ) files.add( res );
-		}
-		
-		return files;
+		return listFiles( list(subdir), filter );
 	}
 
 	@Override
 	public List<DirResource> listDirs()
 	{
-		List<DirResource> dirs = new ArrayList<>();
-		List<Resource> resources = list();
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof DirResource == false ) continue;
-			dirs.add( (DirResource) resource );
-		}
-		
-		return dirs;
+		return listDirs( list(), null );
 	}
 
 	@Override
 	public List<DirResource> listDirs( DirResourceFilter filter )
 	{
-		if( filter == null ) filter = NULL_DIR_RESOURCE_FILTER;
-		
-		List<DirResource> dirs = new ArrayList<>();
-		List<Resource> resources = list();
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof DirResource == false ) continue;
-			
-			DirResource res = (DirResource) resource;
-			if( filter.isAccept(res) ) dirs.add( res );
-		}
-		
-		return dirs;
+		return listDirs( list(), filter );
 	}
 
 	@Override
 	public List<DirResource> listDirs( DirResourceFilter filter, boolean subdir )
 	{
-		if( filter == null ) filter = NULL_DIR_RESOURCE_FILTER;
-		
-		List<DirResource> dirs = new ArrayList<>();
-		List<Resource> resources = list(subdir);
-
-		for( Resource resource : resources )
-		{
-			if( resource instanceof DirResource == false ) continue;
-			
-			DirResource res = (DirResource) resource;
-			if( filter.isAccept(res) ) dirs.add( res );
-		}
-		
-		return dirs;
+		return listDirs( list(subdir), filter );
 	}
 }
