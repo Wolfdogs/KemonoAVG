@@ -49,7 +49,7 @@ public abstract class AbstractDirResource implements DirResource
 		List<Resource> resources = new ArrayList<>();
 		addAllToList( resources, list() );
 		
-		return null;
+		return resources;
 	}
 	
 	@Override
