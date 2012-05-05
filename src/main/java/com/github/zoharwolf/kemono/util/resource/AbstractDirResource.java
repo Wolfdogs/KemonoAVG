@@ -3,6 +3,9 @@ package com.github.zoharwolf.kemono.util.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.zoharwolf.kemono.util.resource.filter.DirResourceFilter;
+import com.github.zoharwolf.kemono.util.resource.filter.FileResourceFilter;
+
 public abstract class AbstractDirResource implements DirResource
 {
 	private static void addAllToList( List<Resource> resources, List<Resource> source )

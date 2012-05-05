@@ -2,18 +2,11 @@ package com.github.zoharwolf.kemono.util.resource;
 
 import java.util.List;
 
+import com.github.zoharwolf.kemono.util.resource.filter.DirResourceFilter;
+import com.github.zoharwolf.kemono.util.resource.filter.FileResourceFilter;
+
 public interface DirResource extends Resource
 {	
-	public interface FileResourceFilter
-	{
-		boolean isAccept( FileResource resource );
-	}
-
-	public interface DirResourceFilter
-	{
-		boolean isAccept( DirResource resource );
-	}
-
 	DirResource getParent();
 	
 	Resource get( String path ); // 可无差别地获取DirResouce和FileResource

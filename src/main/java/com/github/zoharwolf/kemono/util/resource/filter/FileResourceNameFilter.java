@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.zoharwolf.kemono.util.resource.FileResource;
-import com.github.zoharwolf.kemono.util.resource.DirResource.FileResourceFilter;
 
 /** 筛选文件的类，先写个测试用……
  * 
