@@ -6,11 +6,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class FilterMap<K, V> implements Map<K, V>
+public class FilteredMap<K, V> implements Map<K, V>
 {
 	public static <V> Map<String, V> lowercasedKeyMap( Map<String, V> m )
 	{
-		return new FilterMap<>( m,
+		return new FilteredMap<>( m,
 			new Filter<String>()
 			{
 				@Override
@@ -23,7 +23,7 @@ public class FilterMap<K, V> implements Map<K, V>
 
 	public static <V> Map<String, V> uppercasedKeyMap( Map<String, V> m )
 	{
-		return new FilterMap<>( m,
+		return new FilteredMap<>( m,
 			new Filter<String>()
 			{
 				@Override
@@ -45,7 +45,7 @@ public class FilterMap<K, V> implements Map<K, V>
 	private final Filter<K> filter;
 
 
-	public FilterMap( Map<K, V> m, Filter<K> filter )
+	public FilteredMap( Map<K, V> m, Filter<K> filter )
 	{
 		if( m == null ) throw new NullPointerException();
 		
