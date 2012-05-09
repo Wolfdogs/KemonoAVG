@@ -1,14 +1,21 @@
 package com.github.zoharwolf.kemono.util.resource;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.github.zoharwolf.kemono.util.resource.filter.DirResourceFilter;
 import com.github.zoharwolf.kemono.util.resource.filter.FileResourceFilter;
 
+/**
+ * 通用的抽象DirResource父类。
+ * 
+ * @author mk124
+ */
+
 public abstract class AbstractDirResource implements DirResource
 {
-	private static void addAllToList( List<Resource> resources, List<Resource> source )
+	private static void addAllToList( Collection<Resource> resources, Collection<Resource> source )
 	{
 		resources.addAll( source );
 		for( Resource resource : source )
@@ -20,7 +27,7 @@ public abstract class AbstractDirResource implements DirResource
 		}
 	}
 	
-	private static List<FileResource> listFiles( List<Resource> resources, FileResourceFilter filter )
+	private static Collection<FileResource> listFiles( Collection<Resource> resources, FileResourceFilter filter )
 	{
 		List<FileResource> files = new ArrayList<>();
 		for( Resource resource : resources )
@@ -34,7 +41,7 @@ public abstract class AbstractDirResource implements DirResource
 		return files;
 	}
 	
-	private static List<DirResource> listDirs( List<Resource> resources, DirResourceFilter filter )
+	private static Collection<DirResource> listDirs( Collection<Resource> resources, DirResourceFilter filter )
 	{
 		List<DirResource> dirs = new ArrayList<>();
 		for( Resource resource : resources )
@@ -55,7 +62,7 @@ public abstract class AbstractDirResource implements DirResource
 	}
 	
 	@Override
-	public List<Resource> list( boolean subdir )
+	public Collection<Resource> list( boolean subdir )
 	{
 		if( subdir == false ) return list();
 		
@@ -84,37 +91,37 @@ public abstract class AbstractDirResource implements DirResource
 	}
 
 	@Override
-	public List<FileResource> listFiles()
+	public Collection<FileResource> listFiles()
 	{
 		return listFiles( list(), null );
 	}
 
 	@Override
-	public List<FileResource> listFiles( FileResourceFilter filter )
+	public Collection<FileResource> listFiles( FileResourceFilter filter )
 	{
 		return listFiles( list(), filter );
 	}
 
 	@Override
-	public List<FileResource> listFiles( FileResourceFilter filter, boolean subdir )
+	public Collection<FileResource> listFiles( FileResourceFilter filter, boolean subdir )
 	{
 		return listFiles( list(subdir), filter );
 	}
 
 	@Override
-	public List<DirResource> listDirs()
+	public Collection<DirResource> listDirs()
 	{
 		return listDirs( list(), null );
 	}
 
 	@Override
-	public List<DirResource> listDirs( DirResourceFilter filter )
+	public Collection<DirResource> listDirs( DirResourceFilter filter )
 	{
 		return listDirs( list(), filter );
 	}
 
 	@Override
-	public List<DirResource> listDirs( DirResourceFilter filter, boolean subdir )
+	public Collection<DirResource> listDirs( DirResourceFilter filter, boolean subdir )
 	{
 		return listDirs( list(subdir), filter );
 	}
