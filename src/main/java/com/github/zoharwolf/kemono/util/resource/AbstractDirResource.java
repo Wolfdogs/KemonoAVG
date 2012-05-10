@@ -51,7 +51,7 @@ public abstract class AbstractDirResource implements DirResource
 			if( resource instanceof FileResource == false ) continue;
 			
 			FileResource res = (FileResource) resource;
-			if( filter == null || filter.isAccept(res) ) files.add( res );
+			if( filter == null || filter.isAcceptable(res) ) files.add( res );
 		}
 		
 		return files;
@@ -65,7 +65,7 @@ public abstract class AbstractDirResource implements DirResource
 			if( resource instanceof DirResource == false ) continue;
 			
 			DirResource res = (DirResource) resource;
-			if( filter == null || filter.isAccept(res) ) dirs.add( res );
+			if( filter == null || filter.isAcceptable(res) ) dirs.add( res );
 		}
 		
 		return dirs;

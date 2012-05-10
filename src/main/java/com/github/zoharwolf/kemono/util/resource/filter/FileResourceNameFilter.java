@@ -33,7 +33,7 @@ public class FileResourceNameFilter implements FileResourceFilter
 	}
 
 	@Override
-	public boolean isAccept( FileResource resource )
+	public boolean isAcceptable( FileResource resource )
 	{
 		String path = resource.getPath();
 		String[] pathArr = path.split( "/" );

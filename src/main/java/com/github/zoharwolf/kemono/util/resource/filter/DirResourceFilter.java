@@ -27,10 +27,10 @@ import com.github.zoharwolf.kemono.util.resource.DirResource;
 public interface DirResourceFilter
 {
 	/**
-	 * 判定对应的目录资源是否被接受的方法。
+	 * 判定对应的目录资源是否被接受。
 	 * 
 	 * @param resource 目录资源实例
 	 * @return 若接受则返回 {@code true}
 	 */
-	boolean isAccept( DirResource resource );
+	boolean isAcceptable( DirResource resource );
 }

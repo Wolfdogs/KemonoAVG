@@ -27,10 +27,10 @@ import com.github.zoharwolf.kemono.util.resource.FileResource;
 public interface FileResourceFilter
 {
 	/**
-	 * 判定对应的文件资源是否被接受的方法。
+	 * 判定对应的文件资源是否被接受。
 	 * 
 	 * @param resource 文件资源实例
 	 * @return 若接受则返回 {@code true}
 	 */
-	boolean isAccept( FileResource resource );
+	boolean isAcceptable( FileResource resource );
 }
