@@ -27,7 +27,7 @@ public class DrawableContainer extends DrawableObject
 
 	@Override
 	public void onDraw()
-	{		
+	{
 		for( Drawable drawable : drawables )
 		{	
 			GL11.glMatrixMode( GL11.GL_PROJECTION );

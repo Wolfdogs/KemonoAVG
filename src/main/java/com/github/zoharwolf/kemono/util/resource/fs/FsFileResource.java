@@ -1,3 +1,4 @@
+
 package com.github.zoharwolf.kemono.util.resource.fs;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class FsFileResource implements FileResource
 	private String path;
 
 
-	public FsFileResource(String path)
+	public FsFileResource( String path )
 	{
 		this.path = path;
 	}
@@ -30,7 +31,7 @@ public class FsFileResource implements FileResource
 	{
 		return path;
 	}
-	
+
 	@Override
 	public DirResource getParent()
 	{
@@ -41,24 +42,24 @@ public class FsFileResource implements FileResource
 	@Override
 	public int getSize()
 	{
-		File file = new File(path);
+		File file = new File( path );
 		return (int) file.length();
 	}
 
 	@Override
 	public InputStream getInputStream()
 	{
-		File file = new File(path);
+		File file = new File( path );
 		FileInputStream fis = null;
 		try
 		{
-			fis = new FileInputStream(file);
+			fis = new FileInputStream( file );
 		}
 		catch( FileNotFoundException e )
 		{
 			e.printStackTrace();
 		}
-		
+
 		return fis;
 	}
 

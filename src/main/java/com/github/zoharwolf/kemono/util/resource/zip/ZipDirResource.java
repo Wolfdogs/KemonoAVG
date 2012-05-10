@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 MK124
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.zoharwolf.kemono.util.resource.zip;
 
 import java.io.File;
@@ -17,9 +33,9 @@ import com.github.zoharwolf.kemono.util.resource.DirResource;
 import com.github.zoharwolf.kemono.util.resource.Resource;
 
 /**
- * 读取源为Zip文件包的DirResource实现。
+ * 读取源为Zip文件包的DirResource的实现。
  * 
- * @author mk124
+ * @author MK124
  */
 
 public class ZipDirResource extends AbstractDirResource implements DirResource
