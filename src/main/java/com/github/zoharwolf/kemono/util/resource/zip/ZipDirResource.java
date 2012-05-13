@@ -40,6 +40,8 @@ import com.github.zoharwolf.kemono.util.resource.Resource;
 
 public class ZipDirResource extends AbstractDirResource implements DirResource
 {
+	private DirResource parent;
+	
 	private ZipFile zipFile;
 	private ZipArchiveEntry entry;
 	
@@ -62,8 +64,9 @@ public class ZipDirResource extends AbstractDirResource implements DirResource
 		}
 	}
 	
-	private ZipDirResource( ZipFile zipFile )
+	private ZipDirResource( ZipDirResource parent, ZipFile zipFile )
 	{
+		this.parent = parent;
 		this.zipFile = zipFile;
 		
 		initialize();
@@ -89,7 +92,7 @@ public class ZipDirResource extends AbstractDirResource implements DirResource
 			String name = childs[i];
 			
 			ZipDirResource child = (ZipDirResource) res.getDir(name);
-			if( child == null ) child = new ZipDirResource(zipFile);
+			if( child == null ) child = new ZipDirResource(res, zipFile);
 			
 			res.addResource( name, child );
 			res = child;
@@ -97,7 +100,7 @@ public class ZipDirResource extends AbstractDirResource implements DirResource
 		
 		if( entry.isDirectory() )
 		{
-			ZipDirResource child = new ZipDirResource(zipFile);
+			ZipDirResource child = new ZipDirResource(res, zipFile);
 			child.setEntry( entry );
 			res.addResource( childs[childs.length-1], child );
 		}
@@ -127,7 +130,7 @@ public class ZipDirResource extends AbstractDirResource implements DirResource
 	@Override
 	public DirResource getParent()
 	{
-		return null;
+		return parent;
 	}
 	
 	@Override
