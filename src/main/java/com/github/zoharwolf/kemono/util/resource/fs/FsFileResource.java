@@ -1,4 +1,3 @@
-
 package com.github.zoharwolf.kemono.util.resource.fs;
 
 import java.io.File;
@@ -11,61 +10,64 @@ import com.github.zoharwolf.kemono.util.resource.FileResource;
 
 /**
  * 从文件系统中获取文件资源类
- * 
  * @author zohar
- * 
+ *
  */
-
 public class FsFileResource implements FileResource
 {
-	private String path;
+    String path;
+    String rootPath;
+    FsDirResource parent;
+    
+    public FsFileResource(String rootPath, String path, FsDirResource parent)
+    {
+        this.rootPath = rootPath;
+        this.path = path;
+        this.parent = parent;
+    }
+
+    @Override
+    public String getPath()
+    {
+        return path;
+    }
+
+    @Override
+    public int getSize()
+    {
+        File file = new File(rootPath + path);
+        return (int) file.length();
+    }
+
+    @Override
+    public InputStream getInputStream()
+    {
+        File file = new File(rootPath + path);
+        FileInputStream fis = null;
+        try
+        {
+            fis = new FileInputStream(file);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return fis;
+        
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "fs: [root:" + rootPath + "][path:" + path +"]";
+    }
+
+    @Override
+    public DirResource getParent()
+    {
+        return parent;
+    }
 
 
-	public FsFileResource( String path )
-	{
-		this.path = path;
-	}
 
-	@Override
-	public String getPath()
-	{
-		return path;
-	}
-
-	@Override
-	public DirResource getParent()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getSize()
-	{
-		File file = new File( path );
-		return (int) file.length();
-	}
-
-	@Override
-	public InputStream getInputStream()
-	{
-		File file = new File( path );
-		FileInputStream fis = null;
-		try
-		{
-			fis = new FileInputStream( file );
-		}
-		catch( FileNotFoundException e )
-		{
-			e.printStackTrace();
-		}
-
-		return fis;
-	}
-
-	@Override
-	public String toString()
-	{
-		return path;
-	}
 }
