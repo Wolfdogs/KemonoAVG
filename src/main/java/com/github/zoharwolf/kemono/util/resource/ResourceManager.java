@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2012 ZOHAR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.github.zoharwolf.kemono.util.resource;
 
@@ -15,7 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * 工厂类，制造IResourceManager的实例。
- * 
+ * 使用前需要使用addRes方法添加可用资源类型
  * @author zohar
  * 
  */
@@ -25,12 +40,21 @@ public abstract class ResourceManager
     
     private static Map<String, String> validResType; 
     
+    /**
+     * 获取资源的方法
+     * @param resName 这样的格式： 资源类型1缩写://资源1文件(夹);资源类型1缩写://资源1文件(夹);... 后面的资源优先级高于前边的。支持通配符*
+     * @return
+     */
 	public static DirResource getResource( String resName )
 	{
 		return new MultiDirResource( getDirList( resName ) );
 	}
 	
-	// 增加一个资源类型
+	/**
+	 * 增加支持的资源类型
+	 * @param name 资源类型缩写
+	 * @param clsName
+	 */
 	public static void addRes(String name, String clsName)
 	{
 	    if (validResType == null)
