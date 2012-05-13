@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2012 ZOHAR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.github.zoharwolf.kemono.util.resource.fs;
 
@@ -149,13 +164,15 @@ public class FsDirResource extends AbstractDirResource
 	{
 		String childPath = rootPath + dirPath + path;
 		File f = new File( childPath );
-		if( f.isFile() )
+		if ( !f.exists() )
+		    return null;
+		if ( f.isFile() )
 		{
-			return generateFileRes( dirPath + path );
+		    return generateFileRes( dirPath + path );
 		}
 		else
 		{
-			return generateDirRes( dirPath + path );
+		    return generateDirRes( dirPath + path );
 		}
 	}
 
@@ -189,14 +206,18 @@ public class FsDirResource extends AbstractDirResource
 	    {
 	        return path;
 	    }
-	    else if ( !path.endsWith("/") && !path.endsWith("\\") )
+	    
+	    if ( path.startsWith(".\\") )
 	    {
-	        return path + "/";
+	        path = path.substring( 2, path.length() );
 	    }
-	    else
+	    
+	    if ( !path.endsWith("/") && !path.endsWith("\\") )
 	    {
-	        return path;
+	        path += "/";
 	    }
+	    
+        return path;
 	}
 	
 	@Override
