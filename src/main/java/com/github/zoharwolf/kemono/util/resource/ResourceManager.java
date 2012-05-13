@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public abstract class ResourceManager
 {
     
-    private static Map<String, String> validResType; 
+    private static Map<String, Class<?>> validResType; 
     
     /**
      * 获取资源的方法
@@ -55,16 +55,16 @@ public abstract class ResourceManager
 	 * @param name 资源类型缩写
 	 * @param clsName
 	 */
-	public static void addRes(String name, String clsName)
+	public static void addRes(String name, Class<? extends DirResource> cls)
 	{
 	    if (validResType == null)
 	    {
-	        validResType = new HashMap<String, String>();
+	        validResType = new HashMap<String, Class<?>>();
 	    }
 	    
 	    if ( !validResType.containsKey(name) )
 	    {
-	        validResType.put(name, clsName);
+	        validResType.put(name, cls);
 	    }
 	}
 	
@@ -127,14 +127,13 @@ public abstract class ResourceManager
         {
             if ( validResType.containsKey(type))
             {
-                String clsName = validResType.get(type);
                 try
                 {
-                    Class<?> cls = Class.forName(clsName);
+                    Class<?> cls = validResType.get(type);
                     DirResource dirRes = (DirResource) cls.getConstructor(File.class).newInstance(oneFile);
                     matchedRes.add(dirRes);
                 }
-                catch (ClassNotFoundException | InstantiationException | IllegalAccessException 
+                catch (InstantiationException | IllegalAccessException 
                         | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
                 {
                     e.printStackTrace();
