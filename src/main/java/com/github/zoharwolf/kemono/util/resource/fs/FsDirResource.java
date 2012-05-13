@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2012 ZOHAR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.github.zoharwolf.kemono.util.resource.fs;
 
@@ -9,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.zoharwolf.kemono.util.collection.FilteredMap;
 import com.github.zoharwolf.kemono.util.resource.AbstractDirResource;
 import com.github.zoharwolf.kemono.util.resource.DirResource;
 import com.github.zoharwolf.kemono.util.resource.Resource;
@@ -23,13 +39,29 @@ import com.github.zoharwolf.kemono.util.resource.Resource;
 public class FsDirResource extends AbstractDirResource
 {
 	private String dirPath;
+	private String rootPath;
 	private Map<String, Resource> existResMap;
 
 
-	public FsDirResource( String path )
+	public FsDirResource( File file )
 	{
-		this.dirPath = path;
+	    String path = file.getPath();
+		this.rootPath = pathFix( path );
+		init();
 	}
+	
+	private FsDirResource( String rootPath, String path, Map<String, Resource> exsitResMap )
+	{
+	    this.rootPath = pathFix( rootPath );
+	    this.dirPath = pathFix( path );
+	    this.existResMap = exsitResMap;
+	}
+	
+	private void init()
+    {
+	    dirPath = "";
+	    existResMap = FilteredMap.lowercasedKeyMap( new HashMap<String, Resource>() );
+    }
 
 	@Override
 	public Resource get( String path )
@@ -53,34 +85,51 @@ public class FsDirResource extends AbstractDirResource
 
 	private FsFileResource generateFileRes( String path )
 	{
-		if( existResMap == null )
-			existResMap = new HashMap<String, Resource>();
-
-		if( existResMap.containsKey( path.toLowerCase() ) )
+	    if (existResMap == null)
+	    {
+	        existResMap = FilteredMap.lowercasedKeyMap(new HashMap<String, Resource>());
+	    }
+	    
+	    String key = rootPath + "#" + path;
+	    
+		if( existResMap.containsKey(key.toLowerCase()) )
 		{
-			return (FsFileResource) existResMap.get( path.toLowerCase() );
+			return (FsFileResource) existResMap.get( key.toLowerCase() );
 		}
 		else
 		{
-			FsFileResource ffr = new FsFileResource( path );
-			existResMap.put( path.toLowerCase(), ffr );
+		    int index = path.lastIndexOf('/');
+		    String parentPath="";
+		    if ( index>-1 )
+		    {
+		        parentPath = path.substring(0, index);
+		    }
+		    
+		    FsDirResource ffrParent = generateDirRes(parentPath); 
+			FsFileResource ffr = new FsFileResource(rootPath, path, ffrParent);
+			existResMap.put( key.toLowerCase(), ffr );
 			return ffr;
 		}
 	}
 
 	private FsDirResource generateDirRes( String path )
 	{
-		if( existResMap == null )
-			existResMap = new HashMap<String, Resource>();
-
-		if( existResMap.containsKey( path.toLowerCase() ) )
+        if (existResMap == null)
+        {
+            existResMap = FilteredMap.lowercasedKeyMap( new HashMap<String, Resource>() );
+        }
+        
+	    String key = rootPath + "#" + path;
+	       
+		if( existResMap.containsKey( key.toLowerCase() ) )
 		{
-			return (FsDirResource) existResMap.get( path.toLowerCase() );
+			return (FsDirResource) existResMap.get( key.toLowerCase() );
 		}
 		else
 		{
-			FsDirResource fdr = new FsDirResource( path );
+			FsDirResource fdr = new FsDirResource(rootPath, path, existResMap);
 			existResMap.put( path.toLowerCase(), fdr );
+			
 			return fdr;
 		}
 	}
@@ -94,54 +143,87 @@ public class FsDirResource extends AbstractDirResource
 	@Override
 	public DirResource getParent()
 	{
-		File dirFile = new File( dirPath );
-		String parent = dirFile.getParent();
-		if( parent == null )
-		{
-			parent = ".";
-		}
-		return generateDirRes( parent );
+	    if ( dirPath==null || dirPath=="" )
+	    {
+	        return null;
+	    }
+	    
+	    String[] pathArr = StringUtils.split( dirPath, "/\\" );
+
+	    StringBuffer parentPath = new StringBuffer();
+	    for ( int i=1; i<pathArr.length-1; i++ )
+	    {
+	        if ( pathArr[i]==null ) pathArr[i] = "";
+	        parentPath.append( pathArr[i] );
+	    }
+	    
+		return generateDirRes( parentPath.toString() );
 	}
 
 	private Resource getChild( String path )
 	{
-		String childPath = dirPath + "/" + path;
+		String childPath = rootPath + dirPath + path;
 		File f = new File( childPath );
-		if( f.isFile() )
+		if ( !f.exists() )
+		    return null;
+		if ( f.isFile() )
 		{
-			return generateFileRes( childPath );
+		    return generateFileRes( dirPath + path );
 		}
 		else
 		{
-			return generateDirRes( childPath );
+		    return generateDirRes( dirPath + path );
 		}
 	}
 
 	@Override
 	public List<Resource> list()
 	{
-		File dirFile = new File( dirPath );
+		File dirFile = new File( rootPath + dirPath );
 		File[] fileArr = dirFile.listFiles();
 
 		List<Resource> resList = new ArrayList<Resource>();
 		for( File oneFile : fileArr )
 		{
+		    String fullPath = oneFile.getPath();
+		    int startIndex = rootPath.length() + 1;
+		    String path = fullPath.substring(startIndex);
 			if( oneFile.isFile() )
 			{
-				resList.add( generateFileRes( oneFile.getPath() ) );
+				resList.add( generateFileRes( path ) );
 			}
 			else
 			{
-				resList.add( generateDirRes( oneFile.getPath() ) );
+				resList.add( generateDirRes( path ) );
 			}
 		}
 		return resList;
 	}
-
+	
+	private String pathFix(String path)
+	{
+	    if ( path == null || path.isEmpty())
+	    {
+	        return path;
+	    }
+	    
+	    if ( path.startsWith(".\\") )
+	    {
+	        path = path.substring( 2, path.length() );
+	    }
+	    
+	    if ( !path.endsWith("/") && !path.endsWith("\\") )
+	    {
+	        path += "/";
+	    }
+	    
+        return path;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return dirPath;
+	    return "fs: [root:" + rootPath + "][path:" + dirPath +"]";
 	}
 
 }
