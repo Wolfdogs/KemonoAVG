@@ -18,6 +18,7 @@ package com.github.zoharwolf.kemono.util.resource.fs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +185,7 @@ public class FsDirResource extends AbstractDirResource
 	}
 
 	@Override
-	public List<Resource> list()
+	public Collection<Resource> list()
 	{
 		File dirFile = new File( rootPath + dirPath );
 		File[] fileArr = dirFile.listFiles();
@@ -193,7 +194,7 @@ public class FsDirResource extends AbstractDirResource
 		for( File oneFile : fileArr )
 		{
 		    String fullPath = oneFile.getPath();
-		    int startIndex = rootPath.length() + 1;
+		    int startIndex = rootPath.length();
 		    String path = fullPath.substring(startIndex);
 			if( oneFile.isFile() )
 			{
