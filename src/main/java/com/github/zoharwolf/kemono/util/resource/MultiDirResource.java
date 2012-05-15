@@ -17,6 +17,7 @@
 package com.github.zoharwolf.kemono.util.resource;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MultiDirResource extends AbstractDirResource
@@ -70,7 +71,7 @@ public class MultiDirResource extends AbstractDirResource
 	}
 
 	@Override
-	public List<Resource> list()
+	public Collection<Resource> list()
 	{
 		List<Resource> resList = new ArrayList<>();
 		for( DirResource dr : dirResList )
