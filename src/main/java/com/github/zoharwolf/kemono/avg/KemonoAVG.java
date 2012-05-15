@@ -112,6 +112,6 @@ public class KemonoAVG
 		GL11.glMatrixMode( GL11.GL_MODELVIEW );
 		GL11.glLoadIdentity();
 		
-		stage.draw();
+		stage.render();
 	}
 }

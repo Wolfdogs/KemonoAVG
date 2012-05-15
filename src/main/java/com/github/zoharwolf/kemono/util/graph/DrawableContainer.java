@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class DrawableContainer extends DrawableObject
 {
-	private List<Drawable> drawables;
+	private List<Renderable> drawables;
 	
 	
 	public DrawableContainer()
@@ -20,7 +20,7 @@ public class DrawableContainer extends DrawableObject
 		drawables = new LinkedList<>();
 	}
 	
-	public void add( Drawable drawable )
+	public void add( Renderable drawable )
 	{
 		drawables.add( drawable );
 	}
@@ -28,11 +28,11 @@ public class DrawableContainer extends DrawableObject
 	@Override
 	public void onDraw()
 	{
-		for( Drawable drawable : drawables )
+		for( Renderable drawable : drawables )
 		{	
 			GL11.glMatrixMode( GL11.GL_PROJECTION );
 			GL11.glPushMatrix();
-			drawable.draw();
+			drawable.render();
 			GL11.glPopMatrix();
 		}
 	}

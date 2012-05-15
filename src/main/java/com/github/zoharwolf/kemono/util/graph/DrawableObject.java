@@ -3,7 +3,7 @@ package com.github.zoharwolf.kemono.util.graph;
 import org.lwjgl.opengl.GL11;
 
 
-public abstract class DrawableObject implements Drawable, Positionable, Centerable, Scaleable, Rotatable
+public abstract class DrawableObject implements Renderable, Positionable, Centerable, Scaleable, Rotatable
 {
 	private float x, y, z;
 	private float centerX, centerY, centerZ;
@@ -51,7 +51,7 @@ public abstract class DrawableObject implements Drawable, Positionable, Centerab
 	}
 
 	@Override
-	public void draw()
+	public void render()
 	{
 		tran();
 		onDraw();
