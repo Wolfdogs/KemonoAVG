@@ -45,12 +45,12 @@ public final class ResourceManager
 	/**
 	 * 增加支持的资源类型。
 	 * 
-	 * @param name 资源类型缩写
-	 * @param clsName
+	 * @param name 资源类型标识
+	 * @param cls 资源实现类型
 	 */
 	public static void addType( String name, Class<? extends DirResource> cls )
 	{
-		RES_TYPES.put(name, cls);
+		RES_TYPES.put( name, cls );
 	}
 	
 	/**

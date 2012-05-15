@@ -31,6 +31,7 @@ import com.github.zoharwolf.kemono.util.collection.FilteredMap;
 import com.github.zoharwolf.kemono.util.resource.AbstractDirResource;
 import com.github.zoharwolf.kemono.util.resource.DirResource;
 import com.github.zoharwolf.kemono.util.resource.Resource;
+import com.github.zoharwolf.kemono.util.resource.ResourceManager;
 
 /**
  * 读取源为Zip文件包的DirResource的实现。
@@ -40,8 +41,13 @@ import com.github.zoharwolf.kemono.util.resource.Resource;
 
 public class ZipDirResource extends AbstractDirResource implements DirResource
 {
-	private DirResource parent;
+	static
+	{
+		ResourceManager.addType( "ZIP", ZipDirResource.class );
+	}
 	
+	
+	private DirResource parent;
 	private ZipFile zipFile;
 	private ZipArchiveEntry entry;
 	

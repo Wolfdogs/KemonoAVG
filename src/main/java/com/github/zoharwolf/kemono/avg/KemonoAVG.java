@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL11;
 import com.github.zoharwolf.kemono.util.graph.DrawableContainer;
 import com.github.zoharwolf.kemono.util.graph.QuadrangleDrawableObject;
 import com.github.zoharwolf.kemono.util.graph.Stage;
+import com.github.zoharwolf.kemono.util.resource.fs.FsDirResource;
+import com.github.zoharwolf.kemono.util.resource.zip.ZipDirResource;
 
 public class KemonoAVG
 {
@@ -22,6 +24,16 @@ public class KemonoAVG
 	public KemonoAVG( Config config )
 	{
 		this.config = config;
+
+		try
+		{
+			Class.forName( FsDirResource.class.getName() );
+			Class.forName( ZipDirResource.class.getName() );
+		}
+		catch( ClassNotFoundException e )
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void start() throws LWJGLException

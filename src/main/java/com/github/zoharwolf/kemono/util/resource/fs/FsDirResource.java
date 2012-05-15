@@ -28,6 +28,7 @@ import com.github.zoharwolf.kemono.util.collection.FilteredMap;
 import com.github.zoharwolf.kemono.util.resource.AbstractDirResource;
 import com.github.zoharwolf.kemono.util.resource.DirResource;
 import com.github.zoharwolf.kemono.util.resource.Resource;
+import com.github.zoharwolf.kemono.util.resource.ResourceManager;
 
 /**
  * 从文件系统中获取文件夹资源类
@@ -38,6 +39,12 @@ import com.github.zoharwolf.kemono.util.resource.Resource;
 
 public class FsDirResource extends AbstractDirResource
 {
+	static
+	{
+		ResourceManager.addType( "FS", FsDirResource.class );
+	}
+	
+
 	private String dirPath;
 	private String rootPath;
 	private Map<String, Resource> existResMap;
