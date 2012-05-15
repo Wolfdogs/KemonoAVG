@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.zoharwolf.kemono.util.collection.FilteredMap;
+
 /**
  * 工厂类，制造DirResource的实例。
  * 需要使用addType方法添加可用资源类型。
@@ -37,7 +39,7 @@ import java.util.regex.Pattern;
 
 public final class ResourceManager
 {
-	private static final Map<String, Class<? extends DirResource>> RES_TYPES = new HashMap<>(); 
+	private static final Map<String, Class<? extends DirResource>> RES_TYPES = FilteredMap.lowercasedKeyMap( new HashMap<String, Class<? extends DirResource>>() ); 
 	
 	
 	/**
