@@ -1,14 +1,13 @@
 package com.github.zoharwolf.kemono.util.graph;
 
-
 /**
- * 可使用OpenGL进行渲染的接口
+ * 可使用GL进行渲染的接口。
  */
 
 public interface Renderable
 {
 	/**
-	 * 使用OpenGL绘画当前对象。<p>
+	 * 使用GL渲染当前对象。<p>
 	 */
 	void render();
 }
