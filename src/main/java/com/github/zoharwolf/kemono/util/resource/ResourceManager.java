@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,139 +29,132 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 工厂类，制造IResourceManager的实例。
- * 使用前需要使用addRes方法添加可用资源类型
- * @author zohar
+ * 工厂类，制造DirResource的实例。
+ * 需要使用addType方法添加可用资源类型。
  * 
+ * @author zohar
  */
 
-public abstract class ResourceManager
+public final class ResourceManager
 {
-    
-    private static Map<String, Class<?>> validResType; 
-    
-    /**
-     * 获取资源的方法
-     * @param resName 这样的格式： 资源类型1缩写://资源1文件(夹);资源类型1缩写://资源1文件(夹);... 后面的资源优先级高于前边的。支持通配符*
-     * @return
-     */
+	private static final Map<String, Class<? extends DirResource>> RES_TYPES = new HashMap<>(); 
+	
+	
+	/**
+	 * 获取资源的方法。
+	 * 
+	 * @param resName 这样的格式： 资源类型1缩写://资源1文件(夹);资源类型1缩写://资源1文件(夹);... 后面的资源优先级高于前边的。支持通配符*
+	 * @return
+	 */
 	public static DirResource getResource( String resName )
 	{
-		return new MultiDirResource( getDirList( resName ) );
+		return new MultiDirResource( getDirs( resName ) );
 	}
 	
 	/**
-	 * 增加支持的资源类型
+	 * 增加支持的资源类型。
+	 * 
 	 * @param name 资源类型缩写
 	 * @param clsName
 	 */
-	public static void addRes(String name, Class<? extends DirResource> cls)
+	public static void addType( String name, Class<? extends DirResource> cls )
 	{
-	    if (validResType == null)
-	    {
-	        validResType = new HashMap<String, Class<?>>();
-	    }
-	    
-	    if ( !validResType.containsKey(name) )
-	    {
-	        validResType.put(name, cls);
-	    }
+		RES_TYPES.put(name, cls);
 	}
 	
-	private static List<DirResource> getDirList( String resName )
+	private static List<DirResource> getDirs( String resName )
 	{
-	    List<DirResource> dirResList = new ArrayList<DirResource>();
-        String[] resArr = resName.split(";");
-        for ( int i=resArr.length-1; i>=0; i--)
-        {
-            String oneRes = resArr[i];
-            String[] typeAndRes = oneRes.split("://");
-            String type = typeAndRes[0];
-            String res = typeAndRes[1];
-            dirResList.addAll(getAllMatchedResource(type, res));
-        }
-        
-        return dirResList;
+		List<DirResource> dirs = new ArrayList<>();
+		String[] resources = resName.split(";");
+		
+		for ( int i=resources.length-1; i>=0; i--)
+		{
+			String oneRes = resources[i];
+			String[] typeAndRes = oneRes.split("://");
+			String type = typeAndRes[0];
+			String res = typeAndRes[1];
+			dirs.addAll( getAllMatchedResources(type, res) );
+		}
+		
+		return dirs;
 	}
 	
-    private static Collection<? extends DirResource> getAllMatchedResource( String type, final String path )
-    {
-        List<DirResource> matchedRes = new ArrayList<DirResource>();
-        // 取到文件所在的父目录
-        int lastIndex = path.lastIndexOf( '/' );
-        String parent = "";
-        if( lastIndex == -1 )
-        {
-            parent = ".";
-        }
-        else
-        {
-            parent = path.substring( 0, lastIndex );
-        }
+	private static Collection<? extends DirResource> getAllMatchedResources( String type, final String path )
+	{
+		List<DirResource> matchedRes = new ArrayList<>();
+		
+		// 取到文件所在的父目录
+		int lastIndex = path.lastIndexOf( '/' );
+		String parent = "";
+		if( lastIndex == -1 )
+		{
+			parent = ".";
+		}
+		else
+		{
+			parent = path.substring( 0, lastIndex );
+		}
 
-        // 取出父目录下所有与path匹配的资源
-        File parentFile = new File( parent );
-        File[] parentFileArr = parentFile.listFiles( new FileFilter()
-        {
-            @Override
-            public boolean accept( File pathname )
-            {
-                return match( path, pathname.getName() );
-            }
-        } );
+		// 取出父目录下所有与path匹配的资源
+		File[] files = new File(parent).listFiles( new FileFilter()
+		{
+			@Override
+			public boolean accept( File pathname )
+			{
+				return match( path, pathname.getName() );
+			}
+		} );
 
-        // 没找到匹配资源时会显示警告
-        if( parentFileArr.length <= 0 )
-        {
-            try
-            {
-                throw new FileNotFoundException( "WARNING： No matched resource found in " + path );
-            }
-            catch( FileNotFoundException e )
-            {
-                e.printStackTrace();
-            }
-        }
+		// 没找到匹配资源时会显示警告
+		if( files.length <= 0 )
+		{
+			try
+			{
+				throw new FileNotFoundException( "WARNING： No matched resource found in " + path );
+			}
+			catch( FileNotFoundException e )
+			{
+				e.printStackTrace();
+			}
+		}
 
-        for( File oneFile : parentFileArr )
-        {
-            if ( validResType.containsKey(type))
-            {
-                try
-                {
-                    Class<?> cls = validResType.get(type);
-                    DirResource dirRes = (DirResource) cls.getConstructor(File.class).newInstance(oneFile);
-                    matchedRes.add(dirRes);
-                }
-                catch (InstantiationException | IllegalAccessException 
-                        | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
-                {
-                    e.printStackTrace();
-                }
-                
-            }
-            else
-            {
-                try
-                {
-                    throw new Exception( "WARNING： This type is not valid: " + type );
-                }
-                catch( Exception e )
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
+		for( File file : files )
+		{
+			if ( RES_TYPES.containsKey(type) )
+			{
+				try
+				{
+					Class<? extends DirResource> cls = RES_TYPES.get(type);
+					DirResource dirRes = cls.getConstructor(File.class).newInstance( file );
+					matchedRes.add( dirRes );
+				}
+				catch( InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e )
+				{
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				try
+				{
+					throw new Exception( "WARNING： This type is not valid: " + type );
+				}
+				catch( Exception e )
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 
-        return matchedRes;
-    }
-    
-    private static boolean match( String condition, String target )
-    {
-        String rex = condition.replaceAll( "\\.", "\\\\." );
-        rex = rex.replaceAll( "\\*", ".*" );
-        Pattern pattern = Pattern.compile( rex );
-        Matcher matcher = pattern.matcher( target );
-        return matcher.matches();
-    }
+		return matchedRes;
+	}
+	
+	private static boolean match( String condition, String target )
+	{
+		String rex = condition.replaceAll( "\\.", "\\\\." );
+		rex = rex.replaceAll( "\\*", ".*" );
+		Pattern pattern = Pattern.compile( rex );
+		Matcher matcher = pattern.matcher( target );
+		return matcher.matches();
+	}
 }

@@ -223,7 +223,6 @@ public class FsDirResource extends AbstractDirResource
 	@Override
 	public String toString()
 	{
-	    return "fs: [root:" + rootPath + "][path:" + dirPath +"]";
+	    return "fs: [root:" + rootPath + "][path:" + dirPath + "]";
 	}
-
 }

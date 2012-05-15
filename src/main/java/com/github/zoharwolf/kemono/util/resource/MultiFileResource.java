@@ -22,71 +22,72 @@ import java.util.List;
 
 public class MultiFileResource implements FileResource
 {
-    private List<FileResource> fileResList;
-    
-    public MultiFileResource( List<FileResource> fileResList )
-    {
-        this.fileResList = fileResList;
-    }
-    
-    @Override
-    public String getPath()
-    {
-        String path = "";
-        for ( FileResource f : fileResList )
-        {
-            if ( f.getPath() != null)
-            {
-                path = f.getPath();
-                break;
-            }
-        }
-        return path;
-    }
+	private List<FileResource> fileResList;
+	
+	
+	public MultiFileResource( List<FileResource> fileResList )
+	{
+		this.fileResList = fileResList;
+	}
+	
+	@Override
+	public String getPath()
+	{
+		String path = "";
+		for ( FileResource f : fileResList )
+		{
+			if ( f.getPath() != null)
+			{
+				path = f.getPath();
+				break;
+			}
+		}
+		return path;
+	}
 
-    @Override
-    public DirResource getParent()
-    {
-        List<DirResource> parentDirList = new ArrayList<DirResource>();
-        for( FileResource f: fileResList )
-        {
-            DirResource oneParent = f.getParent();
-            if ( oneParent!= null && !parentDirList.contains( oneParent ) )
-            {
-                parentDirList.add(oneParent);
-            }
-        }
-        return new MultiDirResource(parentDirList);
-    }
+	@Override
+	public DirResource getParent()
+	{
+		List<DirResource> parentDirList = new ArrayList<DirResource>();
+		for( FileResource f: fileResList )
+		{
+			DirResource oneParent = f.getParent();
+			if ( oneParent!= null && !parentDirList.contains( oneParent ) )
+			{
+				parentDirList.add(oneParent);
+			}
+		}
+		return new MultiDirResource(parentDirList);
+	}
 
-    @Override
-    public int getSize()
-    {
-        int size = 0;
-        for ( FileResource f : fileResList )
-        {
-            if ( f.getSize() > 0)
-            {
-                size = f.getSize();
-                break;
-            }
-        }
-        return size;
-    }
+	@Override
+	public int getSize()
+	{
+		int size = 0;
+		for ( FileResource f : fileResList )
+		{
+			if ( f.getSize() > 0)
+			{
+				size = f.getSize();
+				break;
+			}
+		}
+		return size;
+	}
 
-    @Override
-    public InputStream getInputStream()
-    {
-        InputStream is = null;
-        for ( FileResource f : fileResList )
-        {
-            if ( f.getInputStream() != null )
-            {
-                is = f.getInputStream();
-                break;
-            }
-        }
-        return is;
-    }
+	@Override
+	public InputStream getInputStream()
+	{
+		InputStream is = null;
+		for ( FileResource f : fileResList )
+		{
+			if ( f.getInputStream() != null )
+			{
+				is = f.getInputStream();
+				break;
+			}
+		}
+		return is;
+	}
 
 }

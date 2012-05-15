@@ -23,6 +23,7 @@ public class MultiDirResource extends AbstractDirResource
 {
 	private List<DirResource> dirResList;
 
+	
 	public MultiDirResource( List<DirResource> dirResList )
 	{
 	    this.dirResList = dirResList;
