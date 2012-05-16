@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 MK124
+ * Copyright (C) 2011-2012 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
+ * 提供管理侦听器、派发事件的管理器接口。
+ * 
  * @author MK124
- *
  */
 
 public interface IEventManager
 {
+	/**
+	 * 事件侦听器的条目类。
+	 * 用于保存侦听器的详细信息。
+	 */
 	public static class Entry
 	{
 		private Class<? extends Event> type;
@@ -59,7 +64,10 @@ public interface IEventManager
 			return null;
 		}
 	}
-	
+
+	/**
+	 * 事件侦听器的优先级。
+	 */
 	public enum Priority
 	{
 		/**
@@ -108,8 +116,7 @@ public interface IEventManager
 		/**
 		 * 获取优先级的实际数据值。
 		 * 
-		 * @return
-		 *  优先级的数据值
+		 * @return 优先级的数据值
 		 */
 		public short getValue()
 		{
@@ -120,37 +127,24 @@ public interface IEventManager
 	/**
 	 * 添加一个全局事件侦听器。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的优先级
 	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
+	 * @return 事件侦听器的条目对象
 	 *  
-	 * @param priority
-	 *  事件侦听器的优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
-	 *  
-	 * @see
-	 *  Priority
+	 * @see Priority
 	 */
 	Entry addListener( Class<? extends Event> type, IEventListener listener, Priority priority );
 	
 	/**
 	 * 添加一个全局事件侦听器。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的自定义优先级
 	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
-	 *  
-	 * @param priority
-	 *  事件侦听器的自定义优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
+	 * @return 事件侦听器的条目对象
 	 */
 	Entry addListener( Class<? extends Event> type, IEventListener listener, short priority );
 	
@@ -158,23 +152,14 @@ public interface IEventManager
 	 * 添加一个兴趣对象类型约束的事件侦听器。<p>
 	 * 只侦听指定兴趣对象类型所相关的事件。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param clz 兴趣对象类型
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的优先级
 	 *  
-	 * @param clz
-	 *  兴趣对象类型
+	 * @return 事件侦听器的条目对象
 	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
-	 *  
-	 * @param priority
-	 *  事件侦听器的优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
-	 *  
-	 * @see
-	 *  Priority
+	 * @see Priority
 	 */
 	Entry addListener( Class<? extends Event> type, Class<?> clz, IEventListener listener, Priority priority );
 	
@@ -182,20 +167,12 @@ public interface IEventManager
 	 * 添加一个兴趣对象类型约束的事件侦听器。<p>
 	 * 只侦听指定兴趣对象类型所相关的事件。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param clz 兴趣对象类型
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的自定义优先级
 	 *  
-	 * @param clz
-	 *  兴趣对象类型
-	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
-	 *  
-	 * @param priority
-	 *  事件侦听器的自定义优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
+	 * @return 事件侦听器的条目对象
 	 */
 	Entry addListener( Class<? extends Event> type, Class<?> clz, IEventListener listener, short priority );
 	
@@ -203,23 +180,14 @@ public interface IEventManager
 	 * 添加一个兴趣对象实例约束的事件侦听器。<p>
 	 * 只侦听指定兴趣对象实例所相关的事件。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param object 兴趣对象实例
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的优先级
 	 *  
-	 * @param object
-	 *  兴趣对象实例
+	 * @return 事件侦听器的条目对象
 	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
-	 *  
-	 * @param priority
-	 *  事件侦听器的优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
-	 *  
-	 * @see
-	 *  Priority
+	 * @see Priority
 	 */
 	Entry addListener( Class<? extends Event> type, Object object, IEventListener listener, Priority priority );
 	
@@ -227,59 +195,38 @@ public interface IEventManager
 	 * 添加一个兴趣对象实例约束的事件侦听器。<p>
 	 * 只侦听指定兴趣对象实例所相关的事件。
 	 * 
-	 * @param type
-	 *  需要侦听的事件类型
+	 * @param type 需要侦听的事件类型
+	 * @param object 兴趣对象实例
+	 * @param listener 事件侦听器对象实例
+	 * @param priority 事件侦听器的自定义优先级
 	 *  
-	 * @param object
-	 *  兴趣对象实例
-	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
-	 *  
-	 * @param priority
-	 *  事件侦听器的自定义优先级
-	 *  
-	 * @return
-	 *  事件侦听器的条目对象
+	 * @return 事件侦听器的条目对象
 	 */
 	Entry addListener( Class<? extends Event> type, Object object, IEventListener listener, short priority );
 
 	/**
 	 * 移除一个全局事件侦听器。
 	 * 
-	 * @param type
-	 *  所侦听的事件类型
-	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
+	 * @param type 所侦听的事件类型
+	 * @param listener 事件侦听器对象实例
 	 */
 	void removeListener( Class<? extends Event> type, IEventListener listener );
 
 	/**
 	 * 移除一个兴趣对象类型约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  所侦听的事件类型
-	 *  
-	 * @param clz
-	 *  兴趣对象类型
-	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
+	 * @param type 所侦听的事件类型
+	 * @param clz 兴趣对象类型
+	 * @param listener 事件侦听器对象实例
 	 */
 	void removeListener( Class<? extends Event> type, Class<?> clz, IEventListener listener );
 
 	/**
 	 * 移除一个兴趣对象实例约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  所侦听的事件类型
-	 *  
-	 * @param clz
-	 *  兴趣对象实例
-	 *  
-	 * @param listener
-	 *  事件侦听器对象实例
+	 * @param type 所侦听的事件类型
+	 * @param clz 兴趣对象实例
+	 * @param listener 事件侦听器对象实例
 	 */
 	void removeListener( Class<? extends Event> type, Object object, IEventListener listener );
 
@@ -292,13 +239,20 @@ public interface IEventManager
 	void removeListener( Entry entry );
 	
 	/**
+	 * 检查是否有指定侦听器实例的事件侦听器。
+	 * 
+	 * @param type 需要检查的事件类型
+	 * @param listener 需要检查的侦听器实例
+	 *  
+	 * @return 当存在指定条件的侦听器的时候，返回 {@code true}
+	 */
+	boolean hasListener( Class<? extends Event> type, IEventListener listener );
+
+	/**
 	 * 检查是否有指定对象类型约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  需要检查的事件类型
-	 *  
-	 * @param clz
-	 *  兴趣对象类型
+	 * @param type 需要检查的事件类型
+	 * @param clz 兴趣对象类型
 	 *  
 	 * @return
 	 *  当存在指定条件的侦听器的时候，返回 {@code true}
@@ -308,14 +262,9 @@ public interface IEventManager
 	/**
 	 * 检查是否有指定对象类型约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  需要检查的事件类型
-	 *  
-	 * @param clz
-	 *  兴趣对象类型
-	 *  
-	 * @param listener
-	 *  需要检查的侦听器实例
+	 * @param type 需要检查的事件类型
+	 * @param clz 兴趣对象类型
+	 * @param listener 需要检查的侦听器实例
 	 *  
 	 * @return
 	 *  当存在指定条件的侦听器的时候，返回 {@code true}
@@ -325,42 +274,29 @@ public interface IEventManager
 	/**
 	 * 检查是否有指定对象实例约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  需要检查的事件类型
+	 * @param type 需要检查的事件类型
+	 * @param object 兴趣对象实例
 	 *  
-	 * @param object
-	 *  兴趣对象实例
-	 *  
-	 * @return
-	 *  当存在指定条件的侦听器的时候，返回 {@code true}
+	 * @return 当存在指定条件的侦听器的时候，返回 {@code true}
 	 */
 	boolean hasListener( Class<? extends Event> type, Object object );
 
 	/**
 	 * 检查是否有指定对象实例约束的事件侦听器。
 	 * 
-	 * @param type
-	 *  需要检查的事件类型
+	 * @param type 需要检查的事件类型
+	 * @param object 兴趣对象实例
+	 * @param listener 需要检查的侦听器实例
 	 *  
-	 * @param object
-	 *  兴趣对象实例
-	 *  
-	 * @param listener
-	 *  需要检查的侦听器实例
-	 *  
-	 * @return
-	 *  当存在指定条件的侦听器的时候，返回 {@code true}
+	 * @return 当存在指定条件的侦听器的时候，返回 {@code true}
 	 */
 	boolean hasListener( Class<? extends Event> type, Object object, IEventListener listener );
 	
 	/**
 	 * 检查事件侦听器条目是否存在。
 	 * 
-	 * @param entry
-	 *  事件侦听器条目
-	 *  
-	 * @return
-	 *  当存在指定条件的侦听器条目的时候，返回 {@code true}
+	 * @param entry 事件侦听器条目
+	 * @return 当存在指定条件的侦听器条目的时候，返回 {@code true}
 	 */
 	boolean hasListener( Entry entry );
 	
@@ -368,11 +304,8 @@ public interface IEventManager
 	 * 按照各侦听器的优先级，依次派发事件。<p>
 	 * 如果事件允许，派发有可能会被中断。
 	 * 
-	 * @param event
-	 *  所要派发的事件实例
-	 *  
-	 * @param objects
-	 *  事件所相关的对象
+	 * @param event 所要派发的事件实例
+	 * @param objects 事件所相关的对象
 	 */
 	<T extends Event> void dispatchEvent( T event, Object ...objects );
 }

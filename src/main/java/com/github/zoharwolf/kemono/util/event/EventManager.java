@@ -185,6 +185,12 @@ public class EventManager implements IEventManager
 		if( objectListenerEntries.size() == 0 ) listenerEntryContainersMap.remove( type );
 	}
 	
+	
+	@Override
+	public boolean hasListener( Class<? extends Event> type, IEventListener listener )
+	{
+		return hasListener( type, Object.class, listener );
+	}
 
 	@Override
 	public boolean hasListener( Class<? extends Event> type, Class<?> clz )

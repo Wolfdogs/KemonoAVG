@@ -151,6 +151,12 @@ public class ManagedEventManager implements IEventManager
 	{
 		eventManager.removeListener( entry );
 	}
+	
+	@Override
+	public boolean hasListener( Class<? extends Event> type, IEventListener listener )
+	{
+		return eventManager.hasListener( type, listener );
+	}
 
 	@Override
 	public boolean hasListener( Class<? extends Event> type, Class<?> clz )
