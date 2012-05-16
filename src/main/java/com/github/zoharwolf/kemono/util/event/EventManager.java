@@ -39,6 +39,16 @@ import com.github.zoharwolf.kemono.util.event.event.EventListenerRemovedEvent;
 
 public class EventManager implements IEventManager
 {
+	private static final ThrowableHandler DEFAULT_THROWABLE_HANDLER = new ThrowableHandler()
+	{
+		@Override
+		public void handleThrowable( Throwable throwable )
+		{
+			throwable.printStackTrace();
+		}
+	};
+	
+	
 	private Map<Class<? extends Event>, Map<Object, Queue<Entry>>> listenerEntryContainersMap;
 	
 	
@@ -257,7 +267,13 @@ public class EventManager implements IEventManager
 	@Override
 	public <T extends Event> void dispatchEvent( T event, Object ...objects )
 	{
-		if( objects.length == 1 && objects[0] instanceof Object[] ) objects = (Object[]) objects[0];
+		dispatchEvent( null, event, objects );
+	}
+
+	@Override
+	public <T extends Event> void dispatchEvent( ThrowableHandler handler, T event, Object ...objects )
+	{
+		if( handler == null ) handler = DEFAULT_THROWABLE_HANDLER;
 		
 		Class<? extends Event> type = event.getClass();
 		PriorityQueue<Entry> listenerEntryQueue = new PriorityQueue<>( 16,
@@ -322,9 +338,13 @@ public class EventManager implements IEventManager
 			{
 				listener.handleEvent( event );
 			}
-			catch( Exception e )
+			catch( AssertionError e )
 			{
-				e.printStackTrace();
+				throw e;
+			}
+			catch( Throwable e )
+			{
+				handler.handleThrowable( e );
 			}
 		}
 	}

@@ -16,6 +16,7 @@
 
 package com.github.zoharwolf.kemono.util.event;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public abstract class EventListener implements IEventListener
 	}
 	
 	@Override
-	public void handleEvent( Event event )
+	public void handleEvent( Event event ) throws Throwable
 	{
 		Method method = eventMethodMap.get( event.getClass() );
 		if( method == null ) return;
@@ -77,9 +78,13 @@ public abstract class EventListener implements IEventListener
 		{
 			method.invoke( this, event );
 		}
-		catch( Exception e )
+		catch( IllegalAccessException | IllegalArgumentException e )
 		{
 			e.printStackTrace();
+		}
+		catch( InvocationTargetException e )
+		{
+			throw e.getTargetException();
 		}
 	}
 }

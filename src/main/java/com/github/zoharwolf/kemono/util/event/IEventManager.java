@@ -66,9 +66,22 @@ public interface IEventManager
 	}
 
 	/**
+	 * 处理事件侦听器抛出异常的接口。
+	 */
+	public static interface ThrowableHandler
+	{
+		/**
+		 * 事件侦听器异常的处理过程。
+		 * 
+		 * @param throwable 异常的实例
+		 */
+		void handleThrowable( Throwable throwable );
+	}
+	
+	/**
 	 * 事件侦听器的优先级。
 	 */
-	public enum Priority
+	public static enum Priority
 	{
 		/**
 		 * 最底层优先级
@@ -308,4 +321,14 @@ public interface IEventManager
 	 * @param objects 事件所相关的对象
 	 */
 	<T extends Event> void dispatchEvent( T event, Object ...objects );
+
+	/**
+	 * 按照各侦听器的优先级，依次派发事件。<p>
+	 * 如果事件允许，派发有可能会被中断。
+	 * 
+	 * @param handler 侦听器异常的处理实例，为 {@code null} 时直接将异常打印到控制台上
+	 * @param event 所要派发的事件实例
+	 * @param objects 事件所相关的对象
+	 */
+	<T extends Event> void dispatchEvent( ThrowableHandler handler, T event, Object ...objects );
 }

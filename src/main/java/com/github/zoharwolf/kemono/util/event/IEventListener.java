@@ -23,5 +23,5 @@ package com.github.zoharwolf.kemono.util.event;
 
 public interface IEventListener
 {
-	void handleEvent( Event event );
+	void handleEvent( Event event ) throws Throwable;
 }

@@ -193,4 +193,10 @@ public class ManagedEventManager implements IEventManager
 	{
 		eventManager.dispatchEvent( event, objects );
 	}
+
+	@Override
+	public <T extends Event> void dispatchEvent( ThrowableHandler handler, T event, Object ...objects )
+	{
+		eventManager.dispatchEvent( handler, event, objects );
+	}
 }
