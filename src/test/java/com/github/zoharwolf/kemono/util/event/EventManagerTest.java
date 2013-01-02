@@ -11,14 +11,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.zoharwolf.kemono.util.event.IEventManager.Priority;
+import com.github.zoharwolf.kemono.util.event.EventManager.Priority;
 import com.github.zoharwolf.kemono.util.event.event.EventListenerAddedEvent;
 import com.github.zoharwolf.kemono.util.event.event.EventListenerEventListener;
 import com.github.zoharwolf.kemono.util.event.event.EventListenerRemovedEvent;
 
 public class EventManagerTest
 {
-	private IEventManager eventManager;
+	private EventManager eventManager;
 	
 	
 	public EventManagerTest()
@@ -29,7 +29,7 @@ public class EventManagerTest
 	@Before
 	public void setUp() throws Exception
 	{
-		eventManager = new EventManager();
+		eventManager = new RootEventManager();
 	}
 
 	@After
@@ -41,8 +41,8 @@ public class EventManagerTest
 	@Test
 	public void testAddAndRemove()
 	{
-		final Map<Class<? extends Event>, IEventListener> addedListeners = new HashMap<>();
-		final Map<Class<? extends Event>, IEventListener> removedListeners = new HashMap<>();
+		final Map<Class<? extends Event>, EventHandler> addedListeners = new HashMap<>();
+		final Map<Class<? extends Event>, EventHandler> removedListeners = new HashMap<>();
 		
 		
 		final EventListenerEventListener testingListener = new EventListenerEventListener()
@@ -54,7 +54,7 @@ public class EventManagerTest
 			@Override
 			public void onEvnetListenerAdded( EventListenerAddedEvent event )
 			{
-				IEventListener listener = event.getListener();
+				EventHandler listener = event.getListener();
 				Class<? extends Event> type = event.getType();
 				
 				if( listener != testingListener ) return;
@@ -66,7 +66,7 @@ public class EventManagerTest
 			@Override
 			public void onEvnetListenerRemoved( EventListenerRemovedEvent event )
 			{
-				IEventListener listener = event.getListener();
+				EventHandler listener = event.getListener();
 				Class<? extends Event> type = event.getType();
 				
 				if( listener != testingListener ) return;
@@ -120,11 +120,11 @@ public class EventManagerTest
 		
 		final long[] total = new long[1];
 		
-		IEventListener[] listeners = new IEventListener[ numbers.length ];
+		EventHandler[] listeners = new EventHandler[ numbers.length ];
 		for( int i=0; i<numbers.length; i++ )
 		{
 			final Number number = numbers[i];
-			listeners[i] = new IEventListener()
+			listeners[i] = new EventHandler()
 			{
 				@Override
 				public void handleEvent( Event e )
@@ -142,7 +142,7 @@ public class EventManagerTest
 		}
 		
 		eventManager.addListener( TestEvent.class,
-			new IEventListener()
+			new EventHandler()
 			{
 				@Override
 				public void handleEvent( Event e )

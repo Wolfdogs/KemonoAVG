@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 MK124
+ * Copyright (C) 2011-2012 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,186 +16,43 @@
 
 package com.github.zoharwolf.kemono.util.event;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.github.zoharwolf.kemono.util.event.event.EventListenerEventListener;
-import com.github.zoharwolf.kemono.util.event.event.EventListenerRemovedEvent;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 
+ * Event manager that is managed.
+ * Used for managing and recycling event handlers that has lifetime.
  * 
  * @author MK124
  */
-public class ManagedEventManager implements IEventManager
+public class ManagedEventManager extends AbstractManagedEventManager implements EventManager
 {
-	private IEventManager eventManager;
-	private EventListenerEventListener eventListenerEventListener;
-	private Entry eventListenerEventListenerEntry;
-	private Set<Entry> managedListeners;
+	private Collection<HandlerEntry> handlerEntries;
 	
 	
-	public ManagedEventManager(IEventManager eventManager)
+	public ManagedEventManager(EventManager eventManager)
 	{
-		this.eventManager = eventManager;
-		managedListeners = new HashSet<>();
-		eventListenerEventListener = new EventListenerEventListener()
-		{
-			@Override
-			public void onEvnetListenerRemoved(EventListenerRemovedEvent event)
-			{
-				Entry entry = event.getEntry();
-				if (managedListeners.contains(entry)) managedListeners.remove(entry);
-			}
-		};
-		
-		eventListenerEventListenerEntry = eventManager.addListener(EventListenerRemovedEvent.class, eventListenerEventListener, Priority.MONITOR);
+		super(eventManager);
+		handlerEntries = new ConcurrentLinkedQueue<>();
 	}
 	
 	@Override
-	protected void finalize() throws Throwable
+	protected HandlerEntry register(HandlerEntry originalEntry)
 	{
-		super.finalize();
-		eventManager.removeListener(eventListenerEventListenerEntry);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-	
-	private void addListenerEntry(Entry entry)
-	{
-		managedListeners.add(entry);
-	}
-	
-	public void removeAllListener()
-	{
-		for (Entry entry : managedListeners)
-			removeListener(entry);
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, IEventListener listener, Priority priority)
-	{
-		Entry entry = eventManager.addListener(type, listener, priority);
-		addListenerEntry(entry);
+		HandlerEntry entry = new HandlerEntryImpl(this, originalEntry);
+		handlerEntries.add(entry);
 		return entry;
 	}
 	
 	@Override
-	public Entry addListener(Class<? extends Event> type, IEventListener listener, short priority)
+	protected void remove(HandlerEntry entry)
 	{
-		Entry entry = eventManager.addListener(type, listener, priority);
-		addListenerEntry(entry);
-		return entry;
+		handlerEntries.remove(entry);
 	}
 	
 	@Override
-	public Entry addListener(Class<? extends Event> type, Class<?> clz, IEventListener listener, Priority priority)
+	public void cancelAll()
 	{
-		Entry entry = eventManager.addListener(type, clz, listener, priority);
-		addListenerEntry(entry);
-		return entry;
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Class<?> clz, IEventListener listener, short priority)
-	{
-		Entry entry = eventManager.addListener(type, clz, listener, priority);
-		addListenerEntry(entry);
-		return entry;
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Object object, IEventListener listener, Priority priority)
-	{
-		Entry entry = eventManager.addListener(type, object, listener, priority);
-		addListenerEntry(entry);
-		return entry;
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Object object, IEventListener listener, short priority)
-	{
-		Entry entry = eventManager.addListener(type, object, listener, priority);
-		addListenerEntry(entry);
-		return entry;
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, IEventListener listener)
-	{
-		eventManager.removeListener(type, listener);
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, Class<?> clz, IEventListener listener)
-	{
-		eventManager.removeListener(type, clz, listener);
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, Object object, IEventListener listener)
-	{
-		eventManager.removeListener(type, object, listener);
-	}
-	
-	@Override
-	public void removeListener(Entry entry)
-	{
-		eventManager.removeListener(entry);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, IEventListener listener)
-	{
-		return eventManager.hasListener(type, listener);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Class<?> clz)
-	{
-		return eventManager.hasListener(type, clz);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Class<?> clz, IEventListener listener)
-	{
-		return eventManager.hasListener(type, clz, listener);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Object object)
-	{
-		return eventManager.hasListener(type, object);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Object object, IEventListener listener)
-	{
-		return eventManager.hasListener(type, object, listener);
-	}
-	
-	@Override
-	public boolean hasListener(Entry entry)
-	{
-		return eventManager.hasListener(entry);
-	}
-	
-	@Override
-	public <T extends Event> void dispatchEvent(T event, Object... objects)
-	{
-		eventManager.dispatchEvent(event, objects);
-	}
-	
-	@Override
-	public <T extends Event> void dispatchEvent(ThrowableHandler handler, T event, Object... objects)
-	{
-		eventManager.dispatchEvent(handler, event, objects);
+		for (HandlerEntry entry : handlerEntries) entry.cancel();
 	}
 }

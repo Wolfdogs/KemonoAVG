@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 MK124
+ * Copyright (C) 2012 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,15 @@
 package com.github.zoharwolf.kemono.util.event;
 
 /**
- * 
+ * Interface of interruptable event.
+ * If you wish your event could be interrupted, please implements this interface.
  * 
  * @author MK124
  */
-public interface IEventListener
+public interface Interruptable
 {
-	void handleEvent(Event event) throws Throwable;
+	/**
+	 * Dispatch the interrupt event.
+	 */
+	void interrupt();
 }

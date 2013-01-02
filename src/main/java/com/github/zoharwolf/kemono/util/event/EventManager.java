@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 MK124
+ * Copyright (C) 2011-2012 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,331 +16,246 @@
 
 package com.github.zoharwolf.kemono.util.event;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.github.zoharwolf.kemono.util.event.event.EventListenerAddedEvent;
-import com.github.zoharwolf.kemono.util.event.event.EventListenerRemovedEvent;
-
 /**
- * 
+ * Provide interface for managing event handlers and dispatching events.
  * 
  * @author MK124
  */
-public class EventManager implements IEventManager
+public interface EventManager
 {
-	private static final ThrowableHandler DEFAULT_THROWABLE_HANDLER = new ThrowableHandler()
+	/**
+	 * Interface of EventHandler entry that is registered. 
+	 * Use for getting informations of handler and canceling event.
+	 */
+	public interface HandlerEntry
 	{
-		@Override
-		public void handleThrowable(Throwable throwable)
+		/**
+		 * Get the related instance of EventManager.
+		 * 
+		 * @return Instance of EventManager.
+		 */
+		public EventManager getEventManager();
+		
+		/**
+		 * Cancel this event handling process.
+		 */
+		public void cancel();
+		
+		/**
+		 * Get the event type that this entry registered.
+		 * 
+		 * @return Event
+		 */
+		public Class<? extends Event> getType();
+		
+		/**
+		 * Get the instance of related Object that this entry registered.
+		 * 
+		 * @return Related Object
+		 */
+		public Object getRelatedObject();
+		
+		/**
+		 * Get the instance of related Class that this entry registered.
+		 * 
+		 * @return Related Class
+		 */
+		public Class<?> getRelatedClass();
+		
+		/**
+		 * Get the instance of EventHandler.
+		 * 
+		 * @return Instance of EventHandler
+		 */
+		public EventHandler getHandler();
+		
+		/**
+		 * Get the priority of EventHandler.
+		 * 
+		 * @return Priority
+		 */
+		public short getPriority();
+	}
+	
+	/**
+	 * Interface of exception handler that thrown by event handler.
+	 */
+	public static interface ThrowableHandler
+	{
+		/**
+		 * Handle the exception.
+		 * 
+		 * @param throwable Exception thrown by event handler.
+		 */
+		void handleThrowable(Throwable throwable);
+	}
+	
+	/**
+	 * Priority of event handler.
+	 */
+	public enum HandlerPriority
+	{
+		/**
+		 * The bottom priority. Handlers of this level will process events at the very last.
+		 * Use {@code LOWEST} if not necessary.
+		 * Don't use if you don't know what you are doing.
+		 */
+		BOTTOM((short) -32768),
+		
+		/**
+		 * The lowest priority.
+		 */
+		LOWEST((short) -16384),
+		
+		/**
+		 * The low priority.
+		 */
+		LOW((short) -8192),
+		
+		/**
+		 * The normal priority.
+		 */
+		NORMAL((short) 0),
+		
+		/**
+		 * The high priority.
+		 */
+		HIGH((short) 8192),
+		
+		/**
+		 * The highest priority.
+		 */
+		HIGHEST((short) 16384),
+		
+		/**
+		 * The monitor priority. Handlers of this level will process events first.
+		 * Use {@code HIGHEST} if not necessary.
+		 * Don't use if you don't know what you are doing.
+		 */
+		MONITOR((short) 32767);
+		
+		private final short value;
+		
+		
+		private HandlerPriority(short value)
 		{
-			throwable.printStackTrace();
-		}
-	};
-	
-	private Map<Class<? extends Event>, Map<Object, Queue<Entry>>> listenerEntryContainersMap;
-	
-	
-	public EventManager()
-	{
-		listenerEntryContainersMap = new ConcurrentHashMap<Class<? extends Event>, Map<Object, Queue<Entry>>>();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, IEventListener listener, Priority priority)
-	{
-		return addListener(type, Object.class, listener, priority.getValue());
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, IEventListener listener, short priority)
-	{
-		return addListener(type, Object.class, listener, priority);
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Class<?> relatedClass, IEventListener listener, Priority priority)
-	{
-		return addListener(type, (Object) relatedClass, listener, priority.getValue());
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Class<?> relatedClass, IEventListener listener, short customPriority)
-	{
-		return addListener(type, (Object) relatedClass, listener, customPriority);
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Object relatedObject, IEventListener listener, Priority priority)
-	{
-		return addListener(type, relatedObject, listener, priority.getValue());
-	}
-	
-	@Override
-	public Entry addListener(Class<? extends Event> type, Object relatedObject, IEventListener listener, short customPriority)
-	{
-		Entry entry = new Entry(type, relatedObject, listener, customPriority);
-		return addListener(entry);
-	}
-	
-	private Entry addListener(Entry entry)
-	{
-		Class<? extends Event> type = entry.getType();
-		Object relatedObject = entry.getRelatedObject();
-		IEventListener listener = entry.getListener();
-		
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null)
-		{
-			objectListenerEntries = new ConcurrentHashMap<>();
-			listenerEntryContainersMap.put(type, objectListenerEntries);
-		}
-		
-		Queue<Entry> entries = objectListenerEntries.get(relatedObject);
-		if (entries == null)
-		{
-			entries = new ConcurrentLinkedQueue<>();
-			objectListenerEntries.put(relatedObject, entries);
-		}
-		
-		for (Entry e : entries)
-		{
-			if (e.getListener() != listener) continue;
-			removeListener(type, relatedObject, listener);
-		}
-		
-		entries.add(entry);
-		
-		EventListenerAddedEvent event = new EventListenerAddedEvent(entry);
-		dispatchEvent(event, this);
-		
-		return entry;
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, IEventListener listener)
-	{
-		removeListener(type, Object.class, listener);
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, Class<?> clz, IEventListener listener)
-	{
-		removeListener(type, (Object) clz, listener);
-	}
-	
-	@Override
-	public void removeListener(Class<? extends Event> type, Object relatedObject, IEventListener listener)
-	{
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return;
-		
-		Queue<Entry> entries = objectListenerEntries.get(relatedObject);
-		if (entries == null) return;
-		
-		for (Entry entry : entries)
-		{
-			if (entry.getListener() != listener) continue;
-			entries.remove(entry);
-			
-			EventListenerRemovedEvent event = new EventListenerRemovedEvent(entry);
-			dispatchEvent(event, this);
+			this.value = value;
 		}
 		
-		if (entries.size() == 0) objectListenerEntries.remove(relatedObject);
-		if (objectListenerEntries.size() == 0) listenerEntryContainersMap.remove(type);
-	}
-	
-	@Override
-	public void removeListener(Entry entry)
-	{
-		Class<? extends Event> type = entry.getType();
-		Object relatedObject = entry.getRelatedObject();
-		
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return;
-		
-		Queue<Entry> entries = objectListenerEntries.get(relatedObject);
-		if (entries == null) return;
-		
-		for (Entry e : entries)
+		/**
+		 * Get the actual value of priority.
+		 * 
+		 * @return Value of priority
+		 */
+		public short getValue()
 		{
-			if (e != entry) continue;
-			entries.remove(entry);
-			
-			EventListenerRemovedEvent event = new EventListenerRemovedEvent(entry);
-			dispatchEvent(event, this);
-			break;
-		}
-		
-		if (entries.size() == 0) objectListenerEntries.remove(relatedObject);
-		if (objectListenerEntries.size() == 0) listenerEntryContainersMap.remove(type);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, IEventListener listener)
-	{
-		return hasListener(type, Object.class, listener);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Class<?> clz)
-	{
-		return hasListener(type, (Object) clz);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Class<?> clz, IEventListener listener)
-	{
-		return hasListener(type, (Object) clz, listener);
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Object object)
-	{
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return false;
-		
-		Queue<Entry> entries = objectListenerEntries.get(object);
-		if (entries == null) return false;
-		
-		return true;
-	}
-	
-	@Override
-	public boolean hasListener(Class<? extends Event> type, Object object, IEventListener listener)
-	{
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return false;
-		
-		Queue<Entry> entries = objectListenerEntries.get(object);
-		if (entries == null) return false;
-		
-		for (Entry entry : entries)
-		{
-			if (entry.getListener() == listener) return true;
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public boolean hasListener(Entry entry)
-	{
-		Class<? extends Event> type = entry.getType();
-		Object relatedObject = entry.getRelatedObject();
-		
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return false;
-		
-		Queue<Entry> entries = objectListenerEntries.get(relatedObject);
-		if (entries == null) return false;
-		
-		for (Entry e : entries)
-		{
-			if (e == entry) return true;
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public <T extends Event> void dispatchEvent(T event, Object... objects)
-	{
-		dispatchEvent(null, event, objects);
-	}
-	
-	@Override
-	public <T extends Event> void dispatchEvent(ThrowableHandler handler, T event, Object... objects)
-	{
-		if (handler == null) handler = DEFAULT_THROWABLE_HANDLER;
-		
-		Class<? extends Event> type = event.getClass();
-		PriorityQueue<Entry> listenerEntryQueue = new PriorityQueue<>(16,
-				new Comparator<Entry>()
-				{
-					@Override
-					public int compare(Entry o1, Entry o2)
-					{
-						return o2.getPriority() - o1.getPriority();
-					}
-				}
-				);
-		
-		Map<Object, Queue<Entry>> objectListenerEntries = listenerEntryContainersMap.get(type);
-		if (objectListenerEntries == null) return;
-		
-		for (Object object : objects)
-		{
-			Class<?> cls = object.getClass();
-			
-			Queue<Entry> entries = objectListenerEntries.get(object);
-			if (entries != null) for (Entry entry : entries)
-			{
-				if (entry.getListener() == null) entries.remove(entry);
-				else listenerEntryQueue.add(entry);
-			}
-			
-			Class<?>[] interfaces = cls.getInterfaces();
-			for (Class<?> clz : interfaces)
-			{
-				Queue<Entry> classListenerEntries = objectListenerEntries.get(clz);
-				if (classListenerEntries != null) for (Entry entry : classListenerEntries)
-				{
-					if (entry.getListener() == null) entries.remove(entry);
-					else listenerEntryQueue.add(entry);
-				}
-			}
-			
-			for (Class<?> clz = cls; clz != null; clz = clz.getSuperclass())
-			{
-				Queue<Entry> classListenerEntries = objectListenerEntries.get(clz);
-				if (classListenerEntries != null) for (Entry entry : classListenerEntries)
-				{
-					if (entry.getListener() == null) entries.remove(entry);
-					else listenerEntryQueue.add(entry);
-				}
-			}
-		}
-		
-		Set<Entry> processedHandler = new HashSet<>(listenerEntryQueue.size());
-		while (listenerEntryQueue.isEmpty() == false && event.isInterrupted() == false)
-		{
-			Entry entry = listenerEntryQueue.poll();
-			IEventListener listener = entry.getListener();
-			
-			if (listener == null) continue;
-			
-			if (processedHandler.contains(entry)) return;
-			processedHandler.add(entry);
-			
-			try
-			{
-				listener.handleEvent(event);
-			}
-			catch (AssertionError e)
-			{
-				throw e;
-			}
-			catch (Throwable e)
-			{
-				handler.handleThrowable(e);
-			}
+			return value;
 		}
 	}
+	
+	/**
+	 * Register a global event handler.
+	 * 
+	 * @param type Related event type
+	 * @param handler Instance of event handler
+	 * @param priority Priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, EventHandler handler, HandlerPriority priority);
+	
+	/**
+	 * Register a global event handler.
+	 * 
+	 * @param type Related event type
+	 * @param handler Instance of event handler
+	 * @param priority Custom priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, EventHandler handler, short priority);
+	
+	/**
+	 * Register a event handler that related with a class.<p>
+	 * Only monitor the event that related with this class.
+	 * 
+	 * @param type Related event type
+	 * @param clz Related class
+	 * @param handler Instance of event handler
+	 * @param priority Priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, Class<?> clz, EventHandler handler, HandlerPriority priority);
+	
+	/**
+	 * Register a event handler that related with a class.<p>
+	 * Only monitor the event that related with this class.
+	 * 
+	 * @param type Related event type
+	 * @param clz Related class
+	 * @param handler Instance of event handler
+	 * @param priority Custom priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, Class<?> clz, EventHandler handler, short priority);
+	
+	/**
+	 * Register a event handler that related with an instance.<p>
+	 * Only monitor the event that related with this instance.
+	 * 
+	 * @param type Related event type
+	 * @param object Related instance
+	 * @param handler Instance of event handler
+	 * @param priority Priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, Object object, EventHandler handler, HandlerPriority priority);
+	
+	/**
+	 * Register a event handler that related with an instance.<p>
+	 * Only monitor the event that related with this instance.
+	 * 
+	 * @param type Related event type
+	 * @param object Related instance
+	 * @param handler Instance of event handler
+	 * @param priority Custom priority of event handler
+	 *  
+	 * @return Entry of event handler
+	 *  
+	 * @see HandlerPriority
+	 */
+	HandlerEntry registerHandler(Class<? extends Event> type, Object object, EventHandler handler, short priority);
+	
+	/**
+	 * Dispatch events according to handler's priority.
+	 * It might be interrupted if event allowed.
+	 * If the handler throw exception, it will be print out and keep dispatching.
+	 * 
+	 * @param event Instance of event to be dispatch
+	 * @param objects Related objects
+	 */
+	<T extends Event> void dispatchEvent(T event, Object... objects);
+	
+	/**
+	 * Dispatch events according to handler's priority.
+	 * It might be interrupted if event allowed.
+	 * 
+	 * @param handler Instance of exception handler. Print out the exception directly if it's {@code null}.
+	 * @param event Instance of event to be dispatch
+	 * @param objects Related objects
+	 */
+	<T extends Event> void dispatchEvent(ThrowableHandler handler, T event, Object... objects);
 }

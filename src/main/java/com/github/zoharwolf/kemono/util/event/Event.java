@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 MK124
+ * Copyright (C) 2011-2012 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,45 +20,43 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * 
+ * The abstract class of event, should be inheritance for defining new event type.
  * 
  * @author MK124
  */
 public abstract class Event
 {
-	private boolean interruptable;
 	private boolean interrupted;
 	
 	
 	protected Event()
 	{
-		this.interruptable = true;
+		
 	}
-	
-	protected Event(boolean interruptable)
-	{
-		this.interruptable = interruptable;
-	}
-	
+
 	@Override
 	public String toString()
 	{
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 	
-	public boolean isInterruptable()
-	{
-		return interruptable;
-	}
-	
-	public boolean isInterrupted()
+	/**
+	 * Check whether the dispatch is interrupted or not.
+	 * 
+	 * @return If the dispatch is interrupted, return {@code true}
+	 */
+	protected boolean isInterrupted()
 	{
 		return interrupted;
 	}
 	
-	public boolean interrupt()
+	/**
+	 * Override this as a public method if it can be interrupted.
+	 * 
+	 * @see Interruptable
+	 */
+	protected void interrupt()
 	{
-		interrupted = interruptable;
-		return interrupted;
+		interrupted = true;
 	}
 }
