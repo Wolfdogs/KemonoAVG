@@ -28,9 +28,7 @@ import com.github.zoharwolf.kemono.util.resource.FileResource;
  * 从文件系统中获取文件资源类
  * 
  * @author zohar
- * 
  */
-
 public class FsFileResource implements FileResource
 {
 	private String path;

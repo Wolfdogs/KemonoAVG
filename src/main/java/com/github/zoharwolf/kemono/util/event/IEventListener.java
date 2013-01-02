@@ -17,11 +17,11 @@
 package com.github.zoharwolf.kemono.util.event;
 
 /**
+ * 
+ * 
  * @author MK124
- *
  */
-
 public interface IEventListener
 {
-	void handleEvent( Event event ) throws Throwable;
+	void handleEvent(Event event) throws Throwable;
 }

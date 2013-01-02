@@ -38,7 +38,6 @@ import com.github.zoharwolf.kemono.util.resource.ResourceManager;
  * 
  * @author MK124
  */
-
 public class ZipDirResource extends AbstractDirResource implements DirResource
 {
 	static

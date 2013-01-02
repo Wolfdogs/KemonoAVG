@@ -26,7 +26,6 @@ import com.github.zoharwolf.kemono.util.resource.filter.FileResourceFilter;
  * 
  * @author MK124
  */
-
 public interface DirResource extends Resource
 {
 	/**
@@ -35,24 +34,24 @@ public interface DirResource extends Resource
 	 * @param path 路径
 	 * @return 对应的资源实例，若不存在则返回 {@code null}
 	 */
-	Resource get( String path );
-
+	Resource get(String path);
+	
 	/**
 	 * 根据路径获取子级文件资源实例。支持多级路径。
 	 * 
 	 * @param path 路径
 	 * @return 对应的文件资源实例，若不存在则返回 {@code null}
 	 */
-	FileResource getFile( String path );
-
+	FileResource getFile(String path);
+	
 	/**
 	 * 根据路径获取子级目录资源实例。支持多级路径。
 	 * 
 	 * @param path 路径
 	 * @return 对应的目录资源实例，若不存在则返回 {@code null}
 	 */
-	DirResource getDir( String path );
-
+	DirResource getDir(String path);
+	
 	/**
 	 * 列举目录下的所有资源。
 	 * 
@@ -66,22 +65,22 @@ public interface DirResource extends Resource
 	 * @param subdir 是否递归列举子目录资源
 	 * @return 资源的集合
 	 */
-	Collection<Resource> list( boolean subdir );
-
+	Collection<Resource> list(boolean subdir);
+	
 	/**
 	 * 列举目录下的所有文件资源。
 	 * 
 	 * @return 资源的集合
 	 */
 	Collection<FileResource> listFiles();
-
+	
 	/**
 	 * 列举目录下的文件资源，使用过滤器来挑选。
 	 * 
 	 * @param filter 挑选资源的过滤器，为 {@code null} 的时候列举所有资源
 	 * @return 资源的集合
 	 */
-	Collection<FileResource> listFiles( FileResourceFilter filter );
+	Collection<FileResource> listFiles(FileResourceFilter filter);
 	
 	/**
 	 * 列举目录以及所有子目录下的文件资源，使用过滤器来挑选。
@@ -90,23 +89,23 @@ public interface DirResource extends Resource
 	 * @param subdir 是否递归列举子目录资源
 	 * @return 资源的集合
 	 */
-	Collection<FileResource> listFiles( FileResourceFilter filter, boolean subdir );
-
+	Collection<FileResource> listFiles(FileResourceFilter filter, boolean subdir);
+	
 	/**
 	 * 列举目录下的所有子目录资源。
 	 * 
 	 * @return 资源的集合
 	 */
 	Collection<DirResource> listDirs();
-
+	
 	/**
 	 * 列举目录下的所有子目录资源，使用过滤器来挑选。
 	 * 
 	 * @param filter 挑选资源的过滤器，为 {@code null} 的时候列举所有资源
 	 * @return 资源的集合
 	 */
-	Collection<DirResource> listDirs( DirResourceFilter filter );
-
+	Collection<DirResource> listDirs(DirResourceFilter filter);
+	
 	/**
 	 * 列举目录下的所有子目录资源，使用过滤器来挑选。
 	 * 
@@ -114,5 +113,5 @@ public interface DirResource extends Resource
 	 * @param subdir 是否递归列举子目录资源
 	 * @return 资源的集合
 	 */
-	Collection<DirResource> listDirs( DirResourceFilter filter, boolean subdir );
+	Collection<DirResource> listDirs(DirResourceFilter filter, boolean subdir);
 }

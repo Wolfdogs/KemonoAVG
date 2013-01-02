@@ -31,7 +31,6 @@ import com.github.zoharwolf.kemono.util.resource.FileResource;
  * 
  * @author MK124
  */
-
 public class ZipFileResource implements FileResource
 {
 	private DirResource parent;

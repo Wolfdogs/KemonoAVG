@@ -21,16 +21,16 @@ public class KemonoAVG
 	private Stage stage;
 	
 	
-	public KemonoAVG( Config config )
+	public KemonoAVG(Config config)
 	{
 		this.config = config;
-
+		
 		try
 		{
-			Class.forName( FsDirResource.class.getName() );
-			Class.forName( ZipDirResource.class.getName() );
+			Class.forName(FsDirResource.class.getName());
+			Class.forName(ZipDirResource.class.getName());
 		}
-		catch( ClassNotFoundException e )
+		catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 		}
@@ -38,22 +38,22 @@ public class KemonoAVG
 	
 	public void start() throws LWJGLException
 	{
-		Display.setDisplayMode( new DisplayMode(config.getScreenWidth(), config.getScreenHeight()) );
-		Display.setFullscreen( config.isFullScreen() );
-		Display.setTitle( config.getTitle() );
-		Display.setVSyncEnabled( config.isVSyncEnabled() );
+		Display.setDisplayMode(new DisplayMode(config.getScreenWidth(), config.getScreenHeight()));
+		Display.setFullscreen(config.isFullScreen());
+		Display.setTitle(config.getTitle());
+		Display.setVSyncEnabled(config.isVSyncEnabled());
 		Display.create();
-
+		
 		// init OpenGL
-		GL11.glEnable( GL11.GL_BLEND );
-		GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
-		GL11.glEnable( GL11.GL_TEXTURE_2D );
-		GL11.glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		GL11.glMatrixMode( GL11.GL_PROJECTION );
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho( 0, 800, 600, 0, 1, -1 );
+		GL11.glOrtho(0, 800, 600, 0, 1, -1);
 		
 		updateFpsTick = System.nanoTime();
 		
@@ -62,40 +62,40 @@ public class KemonoAVG
 		DrawableContainer container = new DrawableContainer();
 		
 		QuadrangleDrawableObject object = new QuadrangleDrawableObject(200.0f, 200.0f);
-		object.setX( 0.0f );
-		object.setY( 0.0f );
-		object.setColor( 1.0f, 1.0f, 1.0f, 1.0f );
-		container.add( object );
-
-		object = new QuadrangleDrawableObject(100.0f, 100.0f);
-		object.setX( 0.0f );
-		object.setY( 0.0f );
-		object.setColor( 1.0f, 0.0f, 0.0f, 1.0f );
-		container.add( object );
-
-		container.setX( 100 );
-		container.setY( 100 );
-		container.setCenterX( 100.0f );
-		container.setCenterY( 100.0f );
-		//container.setRotationZ( 90.0f );
-		//container.setScaleY( 2.0f );
-		stage.add( container );
+		object.setX(0.0f);
+		object.setY(0.0f);
+		object.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		container.add(object);
 		
-		while( !Display.isCloseRequested() )
+		object = new QuadrangleDrawableObject(100.0f, 100.0f);
+		object.setX(0.0f);
+		object.setY(0.0f);
+		object.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		container.add(object);
+		
+		container.setX(100);
+		container.setY(100);
+		container.setCenterX(100.0f);
+		container.setCenterY(100.0f);
+		// container.setRotationZ( 90.0f );
+		// container.setScaleY( 2.0f );
+		stage.add(container);
+		
+		while (!Display.isCloseRequested())
 		{
 			render();
 			Display.update();
-
-			container.setRotationZ( container.getRotationZ() + 1.0f );
+			
+			container.setRotationZ(container.getRotationZ() + 1.0f);
 			
 			fpsCount++;
 			
 			long tick = System.nanoTime();
 			long tickDiff = tick - updateFpsTick;
-			if( tickDiff >= 200*1000*1000 )			// 500 ms
+			if (tickDiff >= 200 * 1000 * 1000) // 500 ms
 			{
-				fps = (float)fpsCount / tickDiff * 1000 * 1000 * 1000.0f;
-				Display.setTitle( config.getTitle() + " - FPS: " + fps );
+				fps = (float) fpsCount / tickDiff * 1000 * 1000 * 1000.0f;
+				Display.setTitle(config.getTitle() + " - FPS: " + fps);
 				
 				updateFpsTick = tick;
 				fpsCount = 0;
@@ -107,9 +107,9 @@ public class KemonoAVG
 	
 	public void render()
 	{
-		GL11.glClear( GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT );
-
-		GL11.glMatrixMode( GL11.GL_MODELVIEW );
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		
 		stage.render();

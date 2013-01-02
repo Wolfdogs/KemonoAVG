@@ -19,14 +19,14 @@ package com.github.zoharwolf.kemono.util.event.event;
 import com.github.zoharwolf.kemono.util.event.IEventManager.Entry;
 
 /**
+ * 
+ * 
  * @author MK124
- *
  */
-
 public class EventListenerAddedEvent extends EventListenerEvent
 {
-	public EventListenerAddedEvent( Entry entry )
+	public EventListenerAddedEvent(Entry entry)
 	{
-		super( entry );
+		super(entry);
 	}
 }

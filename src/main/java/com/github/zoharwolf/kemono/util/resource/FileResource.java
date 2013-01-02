@@ -23,7 +23,6 @@ import java.io.InputStream;
  * 
  * @author MK124
  */
-
 public interface FileResource extends Resource
 {
 	/**

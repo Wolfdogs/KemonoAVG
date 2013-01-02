@@ -21,7 +21,6 @@ package com.github.zoharwolf.kemono.util.resource;
  * 
  * @author MK124
  */
-
 public interface Resource
 {
 	/**
@@ -30,7 +29,7 @@ public interface Resource
 	 * @return 路径字符串
 	 */
 	String getPath();
-
+	
 	/**
 	 * 获取资源的上级目录。
 	 * 

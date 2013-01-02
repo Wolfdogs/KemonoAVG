@@ -28,49 +28,47 @@ import com.github.zoharwolf.kemono.util.resource.filter.FileResourceFilter;
  * 
  * @author MK124
  */
-
 public abstract class AbstractDirResource implements DirResource
 {
-	private static void addAllToList( Collection<Resource> resources, Collection<Resource> source )
+	private static void addAllToList(Collection<Resource> resources, Collection<Resource> source)
 	{
-		resources.addAll( source );
-		for( Resource resource : source )
+		resources.addAll(source);
+		for (Resource resource : source)
 		{
-			if( resource instanceof DirResource == false ) continue;
+			if (resource instanceof DirResource == false) continue;
 			
 			DirResource dirResource = (DirResource) resource;
 			addAllToList(resources, dirResource.list());
 		}
 	}
 	
-	private static Collection<FileResource> listFiles( Collection<Resource> resources, FileResourceFilter filter )
+	private static Collection<FileResource> listFiles(Collection<Resource> resources, FileResourceFilter filter)
 	{
 		List<FileResource> files = new ArrayList<>();
-		for( Resource resource : resources )
+		for (Resource resource : resources)
 		{
-			if( resource instanceof FileResource == false ) continue;
+			if (resource instanceof FileResource == false) continue;
 			
 			FileResource res = (FileResource) resource;
-			if( filter == null || filter.isAcceptable(res) ) files.add( res );
+			if (filter == null || filter.isAcceptable(res)) files.add(res);
 		}
 		
 		return files;
 	}
 	
-	private static Collection<DirResource> listDirs( Collection<Resource> resources, DirResourceFilter filter )
+	private static Collection<DirResource> listDirs(Collection<Resource> resources, DirResourceFilter filter)
 	{
 		List<DirResource> dirs = new ArrayList<>();
-		for( Resource resource : resources )
+		for (Resource resource : resources)
 		{
-			if( resource instanceof DirResource == false ) continue;
+			if (resource instanceof DirResource == false) continue;
 			
 			DirResource res = (DirResource) resource;
-			if( filter == null || filter.isAcceptable(res) ) dirs.add( res );
+			if (filter == null || filter.isAcceptable(res)) dirs.add(res);
 		}
 		
 		return dirs;
 	}
-	
 	
 	protected AbstractDirResource()
 	{
@@ -78,67 +76,67 @@ public abstract class AbstractDirResource implements DirResource
 	}
 	
 	@Override
-	public Collection<Resource> list( boolean subdir )
+	public Collection<Resource> list(boolean subdir)
 	{
-		if( subdir == false ) return list();
+		if (subdir == false) return list();
 		
 		List<Resource> resources = new ArrayList<>();
-		addAllToList( resources, list() );
+		addAllToList(resources, list());
 		
 		return resources;
 	}
 	
 	@Override
-	public FileResource getFile( String path )
+	public FileResource getFile(String path)
 	{
 		Resource resource = get(path);
-		if( resource instanceof FileResource == false ) return null;
+		if (resource instanceof FileResource == false) return null;
 		
 		return (FileResource) resource;
 	}
-
+	
 	@Override
-	public DirResource getDir( String path )
+	public DirResource getDir(String path)
 	{
 		Resource resource = get(path);
-		if( resource instanceof DirResource == false ) return null;
+		if (resource instanceof DirResource == false) return null;
 		
 		return (DirResource) resource;
 	}
-
+	
 	@Override
 	public Collection<FileResource> listFiles()
 	{
-		return listFiles( list(), null );
+		return listFiles(list(), null);
 	}
-
+	
 	@Override
-	public Collection<FileResource> listFiles( FileResourceFilter filter )
+	public Collection<FileResource> listFiles(FileResourceFilter filter)
 	{
-		return listFiles( list(), filter );
+		return listFiles(list(), filter);
 	}
-
+	
 	@Override
-	public Collection<FileResource> listFiles( FileResourceFilter filter, boolean subdir )
+	public Collection<FileResource> listFiles(FileResourceFilter filter, boolean subdir)
 	{
-		return listFiles( list(subdir), filter );
+		return listFiles(list(subdir), filter);
 	}
-
+	
 	@Override
 	public Collection<DirResource> listDirs()
 	{
-		return listDirs( list(), null );
+		return listDirs(list(), null);
 	}
-
+	
 	@Override
-	public Collection<DirResource> listDirs( DirResourceFilter filter )
+	public Collection<DirResource> listDirs(DirResourceFilter filter)
 	{
-		return listDirs( list(), filter );
+		return listDirs(list(), filter);
 	}
-
+	
 	@Override
-	public Collection<DirResource> listDirs( DirResourceFilter filter, boolean subdir )
+	public Collection<DirResource> listDirs(DirResourceFilter filter, boolean subdir)
 	{
-		return listDirs( list(subdir), filter );
+		return listDirs(list(subdir), filter);
 	}
 }

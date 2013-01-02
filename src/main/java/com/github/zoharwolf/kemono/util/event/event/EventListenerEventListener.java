@@ -19,18 +19,22 @@ package com.github.zoharwolf.kemono.util.event.event;
 import com.github.zoharwolf.kemono.util.event.EventListener;
 
 /**
+ * 
+ * 
  * @author MK124
- *
  */
-
 public abstract class EventListenerEventListener extends EventListener
 {
 	protected EventListenerEventListener()
 	{
-		super( EventListenerEventListener.class );
+		super(EventListenerEventListener.class);
 	}
 	
-
-	public void onEvnetListenerAdded( EventListenerAddedEvent event )			{ }
-	public void onEvnetListenerRemoved( EventListenerRemovedEvent event )		{ }
+	public void onEvnetListenerAdded(EventListenerAddedEvent event)
+	{
+	}
+	
+	public void onEvnetListenerRemoved(EventListenerRemovedEvent event)
+	{
+	}
 }

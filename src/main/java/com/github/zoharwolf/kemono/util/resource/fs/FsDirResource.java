@@ -35,9 +35,7 @@ import com.github.zoharwolf.kemono.util.resource.ResourceManager;
  * 从文件系统中获取文件夹资源类
  * 
  * @author zohar
- * 
  */
-
 public class FsDirResource extends AbstractDirResource
 {
 	static

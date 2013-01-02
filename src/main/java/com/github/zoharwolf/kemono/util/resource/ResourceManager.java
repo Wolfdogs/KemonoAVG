@@ -31,15 +31,13 @@ import java.util.regex.Pattern;
 import com.github.zoharwolf.kemono.util.collection.FilteredMap;
 
 /**
- * 工厂类，制造DirResource的实例。
- * 需要使用addType方法添加可用资源类型。
+ * 工厂类，制造DirResource的实例。 需要使用addType方法添加可用资源类型。
  * 
  * @author zohar
  */
-
 public final class ResourceManager
 {
-	private static final Map<String, Class<? extends DirResource>> RES_TYPES = FilteredMap.lowercasedKeyMap( new HashMap<String, Class<? extends DirResource>>() ); 
+	private static final Map<String, Class<? extends DirResource>> RES_TYPES = FilteredMap.lowercasedKeyMap(new HashMap<String, Class<? extends DirResource>>());
 	
 	
 	/**
@@ -48,9 +46,9 @@ public final class ResourceManager
 	 * @param name 资源类型标识
 	 * @param cls 资源实现类型
 	 */
-	public static void addType( String name, Class<? extends DirResource> cls )
+	public static void addType(String name, Class<? extends DirResource> cls)
 	{
-		RES_TYPES.put( name, cls );
+		RES_TYPES.put(name, cls);
 	}
 	
 	/**
@@ -59,85 +57,85 @@ public final class ResourceManager
 	 * @param resName 这样的格式： 资源类型1缩写://资源1文件(夹);资源类型1缩写://资源1文件(夹);... 后面的资源优先级高于前边的。支持通配符*
 	 * @return
 	 */
-	public static DirResource getResource( String resName )
+	public static DirResource getResource(String resName)
 	{
 		try
 		{
-			return new MultiDirResource( getDirs(resName) );
+			return new MultiDirResource(getDirs(resName));
 		}
-		catch( Exception e )
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
-	private static List<DirResource> getDirs( String resLocator ) throws FileNotFoundException
+	private static List<DirResource> getDirs(String resLocator) throws FileNotFoundException
 	{
 		List<DirResource> dirs = new ArrayList<>();
 		String[] resources = resLocator.split(";");
 		
-		for( int i=resources.length-1; i>=0; i-- )
+		for (int i = resources.length - 1; i >= 0; i--)
 		{
 			String oneRes = resources[i];
 			String[] typeAndRes = oneRes.split("://");
 			String type = typeAndRes[0];
 			String res = typeAndRes[1];
-			dirs.addAll( getAllMatchedResources(type, res) );
+			dirs.addAll(getAllMatchedResources(type, res));
 		}
 		
 		return dirs;
 	}
 	
-	private static Collection<? extends DirResource> getAllMatchedResources( String type, final String path ) throws FileNotFoundException
+	private static Collection<? extends DirResource> getAllMatchedResources(String type, final String path) throws FileNotFoundException
 	{
 		List<DirResource> matches = new ArrayList<>();
 		
 		// 取到文件所在的父目录
-		int lastIndex = path.lastIndexOf( '/' );
+		int lastIndex = path.lastIndexOf('/');
 		String parent = ".";
 		
-		if( lastIndex != -1 ) parent = path.substring( 0, lastIndex );
-
+		if (lastIndex != -1) parent = path.substring(0, lastIndex);
+		
 		// 取出父目录下所有与path匹配的资源
 		File[] files = new File(parent).listFiles(
-			new FileFilter()
-			{
-				@Override
-				public boolean accept( File pathname )
+				new FileFilter()
 				{
-					return match( path, pathname.getName() );
-				}
-			} );
-
+					@Override
+					public boolean accept(File pathname)
+					{
+						return match(path, pathname.getName());
+					}
+				});
+		
 		// 没找到匹配资源时抛出异常
-		if( files.length == 0 ) throw new FileNotFoundException( "No matched resource found in " + path );
-
-		for( File file : files )
+		if (files.length == 0) throw new FileNotFoundException("No matched resource found in " + path);
+		
+		for (File file : files)
 		{
-			if( ! RES_TYPES.containsKey(type) ) throw new UnsupportedOperationException( "This type is not valid: " + type );
+			if (!RES_TYPES.containsKey(type)) throw new UnsupportedOperationException("This type is not valid: " + type);
 			
 			try
 			{
 				Class<? extends DirResource> cls = RES_TYPES.get(type);
-				DirResource dirRes = cls.getConstructor(File.class).newInstance( file );
-				matches.add( dirRes );
+				DirResource dirRes = cls.getConstructor(File.class).newInstance(file);
+				matches.add(dirRes);
 			}
-			catch( InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e )
+			catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
 			{
 				e.printStackTrace();
 			}
 		}
-
+		
 		return matches;
 	}
 	
-	private static boolean match( String condition, String target )
+	private static boolean match(String condition, String target)
 	{
-		String rex = condition.replaceAll( "\\.", "\\\\." );
-		rex = rex.replaceAll( "\\*", ".*" );
-		Pattern pattern = Pattern.compile( rex );
-		Matcher matcher = pattern.matcher( target );
+		String rex = condition.replaceAll("\\.", "\\\\.");
+		rex = rex.replaceAll("\\*", ".*");
+		Pattern pattern = Pattern.compile(rex);
+		Matcher matcher = pattern.matcher(target);
 		return matcher.matches();
 	}
 }

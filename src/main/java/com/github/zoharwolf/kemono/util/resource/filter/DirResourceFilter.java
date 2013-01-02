@@ -23,7 +23,6 @@ import com.github.zoharwolf.kemono.util.resource.DirResource;
  * 
  * @author MK124
  */
-
 public interface DirResourceFilter
 {
 	/**
@@ -32,5 +31,5 @@ public interface DirResourceFilter
 	 * @param resource 目录资源实例
 	 * @return 若接受则返回 {@code true}
 	 */
-	boolean isAcceptable( DirResource resource );
+	boolean isAcceptable(DirResource resource);
 }

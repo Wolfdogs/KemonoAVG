@@ -25,7 +25,7 @@ public class MultiFileResource implements FileResource
 	private List<FileResource> fileResList;
 	
 	
-	public MultiFileResource( List<FileResource> fileResList )
+	public MultiFileResource(List<FileResource> fileResList)
 	{
 		this.fileResList = fileResList;
 	}
@@ -34,9 +34,9 @@ public class MultiFileResource implements FileResource
 	public String getPath()
 	{
 		String path = "";
-		for ( FileResource f : fileResList )
+		for (FileResource f : fileResList)
 		{
-			if ( f.getPath() != null)
+			if (f.getPath() != null)
 			{
 				path = f.getPath();
 				break;
@@ -44,29 +44,29 @@ public class MultiFileResource implements FileResource
 		}
 		return path;
 	}
-
+	
 	@Override
 	public DirResource getParent()
 	{
 		List<DirResource> parentDirList = new ArrayList<DirResource>();
-		for( FileResource f: fileResList )
+		for (FileResource f : fileResList)
 		{
 			DirResource oneParent = f.getParent();
-			if ( oneParent!= null && !parentDirList.contains( oneParent ) )
+			if (oneParent != null && !parentDirList.contains(oneParent))
 			{
 				parentDirList.add(oneParent);
 			}
 		}
 		return new MultiDirResource(parentDirList);
 	}
-
+	
 	@Override
 	public int getSize()
 	{
 		int size = 0;
-		for ( FileResource f : fileResList )
+		for (FileResource f : fileResList)
 		{
-			if ( f.getSize() > 0)
+			if (f.getSize() > 0)
 			{
 				size = f.getSize();
 				break;
@@ -74,14 +74,14 @@ public class MultiFileResource implements FileResource
 		}
 		return size;
 	}
-
+	
 	@Override
 	public InputStream getInputStream()
 	{
 		InputStream is = null;
-		for ( FileResource f : fileResList )
+		for (FileResource f : fileResList)
 		{
-			if ( f.getInputStream() != null )
+			if (f.getInputStream() != null)
 			{
 				is = f.getInputStream();
 				break;
@@ -89,5 +89,4 @@ public class MultiFileResource implements FileResource
 		}
 		return is;
 	}
-
 }

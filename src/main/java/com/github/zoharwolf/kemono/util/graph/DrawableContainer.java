@@ -6,10 +6,8 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 /**
- * 可绘画对象的容器。<p>
- * 用于管理可绘画对象的渲染循序以及事件处理。
+ * 可绘画对象的容器，用于管理可绘画对象的渲染循序以及事件处理。
  */
-
 public class DrawableContainer extends DrawableObject
 {
 	private List<Renderable> drawables;
@@ -20,17 +18,17 @@ public class DrawableContainer extends DrawableObject
 		drawables = new LinkedList<>();
 	}
 	
-	public void add( Renderable drawable )
+	public void add(Renderable drawable)
 	{
-		drawables.add( drawable );
+		drawables.add(drawable);
 	}
-
+	
 	@Override
 	public void onDraw()
 	{
-		for( Renderable drawable : drawables )
-		{	
-			GL11.glMatrixMode( GL11.GL_PROJECTION );
+		for (Renderable drawable : drawables)
+		{
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
 			GL11.glPushMatrix();
 			drawable.render();
 			GL11.glPopMatrix();

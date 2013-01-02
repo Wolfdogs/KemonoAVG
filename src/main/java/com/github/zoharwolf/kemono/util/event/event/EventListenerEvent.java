@@ -21,25 +21,25 @@ import com.github.zoharwolf.kemono.util.event.IEventListener;
 import com.github.zoharwolf.kemono.util.event.IEventManager.Entry;
 
 /**
+ * 
+ * 
  * @author MK124
- *
  */
-
 public class EventListenerEvent extends Event
 {
 	private Entry entry;
 	
 	
-	public EventListenerEvent( Entry entry )
+	public EventListenerEvent(Entry entry)
 	{
 		this.entry = entry;
 	}
-
+	
 	public Entry getEntry()
 	{
 		return entry;
 	}
-
+	
 	public Class<? extends Event> getType()
 	{
 		return entry.getType();

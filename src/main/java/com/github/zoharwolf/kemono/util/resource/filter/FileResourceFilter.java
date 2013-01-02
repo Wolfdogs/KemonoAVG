@@ -23,7 +23,6 @@ import com.github.zoharwolf.kemono.util.resource.FileResource;
  * 
  * @author MK124
  */
-
 public interface FileResourceFilter
 {
 	/**
@@ -32,5 +31,5 @@ public interface FileResourceFilter
 	 * @param resource 文件资源实例
 	 * @return 若接受则返回 {@code true}
 	 */
-	boolean isAcceptable( FileResource resource );
+	boolean isAcceptable(FileResource resource);
 }

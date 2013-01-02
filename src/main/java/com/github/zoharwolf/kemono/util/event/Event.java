@@ -20,10 +20,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
+ * 
+ * 
  * @author MK124
- *
  */
-
 public abstract class Event
 {
 	private boolean interruptable;
@@ -35,7 +35,7 @@ public abstract class Event
 		this.interruptable = true;
 	}
 	
-	protected Event( boolean interruptable )
+	protected Event(boolean interruptable)
 	{
 		this.interruptable = interruptable;
 	}
