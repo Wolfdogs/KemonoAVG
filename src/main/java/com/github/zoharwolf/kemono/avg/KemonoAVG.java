@@ -1,9 +1,10 @@
 package com.github.zoharwolf.kemono.avg;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 
 import com.github.zoharwolf.kemono.util.graph.DrawableContainer;
 import com.github.zoharwolf.kemono.util.graph.QuadrangleDrawableObject;
@@ -47,15 +48,15 @@ public class KemonoAVG
 		Display.create();
 		
 		// init OpenGL
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glEnable(GL_TEXTURE_2D);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0, 800, 600, 0, 1, -1);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, 800, 600, 0, 1, -1);
 		
 		updateFpsTick = System.nanoTime();
 		
@@ -109,10 +110,10 @@ public class KemonoAVG
 	
 	public void render()
 	{
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 		
 		stage.render();
 	}

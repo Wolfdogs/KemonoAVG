@@ -1,6 +1,6 @@
 package com.github.zoharwolf.kemono.util.graph;
 
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 
 public class QuadrangleDrawableObject extends DrawableObject implements Colorable
 {
@@ -29,14 +29,14 @@ public class QuadrangleDrawableObject extends DrawableObject implements Colorabl
 	@Override
 	protected void onRender()
 	{
-		GL11.glColor4f(r, g, b, a);
+		glColor4f(r, g, b, a);
 		
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(0.0f, 0.0f);
-		GL11.glVertex2f(width, 0.0f);
-		GL11.glVertex2f(width, height);
-		GL11.glVertex2f(0.0f, height);
-		GL11.glEnd();
+		glBegin(GL_QUADS);
+		glVertex2f(0.0f, 0.0f);
+		glVertex2f(width, 0.0f);
+		glVertex2f(width, height);
+		glVertex2f(0.0f, height);
+		glEnd();
 	}
 	
 	@Override

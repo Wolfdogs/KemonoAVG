@@ -1,6 +1,6 @@
 package com.github.zoharwolf.kemono.util.graph;
 
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 
 public abstract class DrawableObject implements Renderable, Positionable, Centerable, Scaleable, Rotatable
 {
@@ -35,24 +35,24 @@ public abstract class DrawableObject implements Renderable, Positionable, Center
 		final float sx = scaleX, sy = scaleY, sz = scaleZ;
 		final float rx = rotateX, ry = rotateY, rz = rotateZ;
 		
-		GL11.glTranslatef(x+cx, y+cy, z+cz);
-		GL11.glRotatef(rx, 1.0f, 0.0f, 0.0f);
-		GL11.glRotatef(ry, 0.0f, 1.0f, 0.0f);
-		GL11.glRotatef(rz, 0.0f, 0.0f, 1.0f);
-		GL11.glScalef(sx, sy, sz);
-		GL11.glTranslatef(-cx, -cy, -cz);
+		glTranslatef(x+cx, y+cy, z+cz);
+		glRotatef(rx, 1.0f, 0.0f, 0.0f);
+		glRotatef(ry, 0.0f, 1.0f, 0.0f);
+		glRotatef(rz, 0.0f, 0.0f, 1.0f);
+		glScalef(sx, sy, sz);
+		glTranslatef(-cx, -cy, -cz);
 	}
 	
 	@Override
 	public void render()
 	{
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glPushMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
 		
 		tran();
 		onRender();
 		
-		GL11.glPopMatrix();
+		glPopMatrix();
 	}
 	
 	@Override
