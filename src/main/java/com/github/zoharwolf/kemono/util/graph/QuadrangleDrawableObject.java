@@ -27,7 +27,7 @@ public class QuadrangleDrawableObject extends DrawableObject implements Colorabl
 	}
 	
 	@Override
-	protected void onDraw()
+	protected void onRender()
 	{
 		GL11.glColor4f(r, g, b, a);
 		

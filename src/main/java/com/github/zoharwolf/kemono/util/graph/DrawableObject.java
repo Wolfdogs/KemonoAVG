@@ -10,7 +10,7 @@ public abstract class DrawableObject implements Renderable, Positionable, Center
 	private float rotateX, rotateY, rotateZ;
 	
 	
-	protected abstract void onDraw();
+	protected abstract void onRender();
 	
 	public DrawableObject()
 	{
@@ -30,29 +30,29 @@ public abstract class DrawableObject implements Renderable, Positionable, Center
 	
 	protected void tran()
 	{
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		final float x = this.x, y = this.y, z = this.z;
+		final float cx = centerX, cy = centerY, cz = centerZ;
+		final float sx = scaleX, sy = scaleY, sz = scaleZ;
+		final float rx = rotateX, ry = rotateY, rz = rotateZ;
 		
-		float x = this.x, y = this.y, z = this.z;
-		float cx = centerX, cy = centerY, cz = centerZ;
-		float sx = scaleX, sy = scaleY, sz = scaleZ;
-		float rx = rotateX, ry = rotateY, rz = rotateZ;
-		
-		GL11.glTranslatef(cx, cy, cz);
+		GL11.glTranslatef(x+cx, y+cy, z+cz);
 		GL11.glRotatef(rx, 1.0f, 0.0f, 0.0f);
 		GL11.glRotatef(ry, 0.0f, 1.0f, 0.0f);
 		GL11.glRotatef(rz, 0.0f, 0.0f, 1.0f);
 		GL11.glScalef(sx, sy, sz);
 		GL11.glTranslatef(-cx, -cy, -cz);
-		
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glTranslatef(x, y, z);
 	}
 	
 	@Override
 	public void render()
 	{
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glPushMatrix();
+		
 		tran();
-		onDraw();
+		onRender();
+		
+		GL11.glPopMatrix();
 	}
 	
 	@Override

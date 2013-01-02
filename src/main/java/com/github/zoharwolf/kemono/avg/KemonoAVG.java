@@ -34,6 +34,8 @@ public class KemonoAVG
 		{
 			e.printStackTrace();
 		}
+		
+		System.loadLibrary("lwjgl");
 	}
 	
 	public void start() throws LWJGLException
